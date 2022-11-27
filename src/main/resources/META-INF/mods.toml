@@ -42,7 +42,7 @@ authors="AyUpItsAli" #optional
 
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-The ULTIMATE Bean Experience for Minecraft!
+The Ultimate BEAN Experience for Minecraft!
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.alisbeanmod]] #optional
