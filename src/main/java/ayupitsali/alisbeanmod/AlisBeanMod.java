@@ -1,4 +1,4 @@
-package io.github.ayupitsali.alisbeanmod;
+package ayupitsali.alisbeanmod;
 
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.api.distmarker.Dist;
