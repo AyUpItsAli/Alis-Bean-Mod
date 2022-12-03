@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "tag": "alisbeanmod:crops/kidney_bean"
+      "tag": "forge:kidney_beans"
     }
   ],
   "result": {

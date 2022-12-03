@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "alisbeanmod:haricot_bean_seeds",
+    "#forge:seeds/haricot_bean"
+  ]
+}

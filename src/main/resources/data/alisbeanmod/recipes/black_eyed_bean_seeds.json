@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "tag": "alisbeanmod:crops/black_eyed_bean"
+      "tag": "forge:black_eyed_beans"
     }
   ],
   "result": {

@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "alisbeanmod:black_eyed_beans",
+    "#forge:crops/black_eyed_bean"
+  ]
+}

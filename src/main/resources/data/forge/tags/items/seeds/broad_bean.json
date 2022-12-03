@@ -1,10 +1,6 @@
 {
   "replace": false,
   "values": [
-    {
-      "id": "#forge:seeds/broad_bean",
-      "required": false
-    },
     "alisbeanmod:broad_bean_seeds"
   ]
 }
