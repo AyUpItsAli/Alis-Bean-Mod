@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/crop",
+  "textures": {
+    "crop": "alisbeanmod:block/black_eyed_bean_crop_stage3"
+  }
+}
