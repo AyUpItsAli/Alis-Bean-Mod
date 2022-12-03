@@ -19,7 +19,7 @@ public class ModItems {
     public static final RegistryObject<Item> BLACK_EYED_BEANS = ITEMS.register("black_eyed_beans",
             () -> new Item(new Item.Properties()
                     .tab(ModItemGroups.ALIS_BEAN_MOD)
-                    .food(FoodConstructor.createFood(FoodConstructor.REG_2))));
+                    .food(FoodConstructor.createFood(FoodConstructor.REG_3))));
     public static final RegistryObject<Item> BROAD_BEAN_SEEDS = ITEMS.register("broad_bean_seeds",
             () -> new ItemNameBlockItem(ModBlocks.BROAD_BEAN_CROP.get(), new Item.Properties()
                     .tab(ModItemGroups.ALIS_BEAN_MOD)));
@@ -33,7 +33,7 @@ public class ModItems {
     public static final RegistryObject<Item> HARICOT_BEANS = ITEMS.register("haricot_beans",
             () -> new Item(new Item.Properties()
                     .tab(ModItemGroups.ALIS_BEAN_MOD)
-                    .food(FoodConstructor.createFood(FoodConstructor.REG_4))));
+                    .food(FoodConstructor.createFood(FoodConstructor.REG_3))));
     public static final RegistryObject<Item> KIDNEY_BEAN_SEEDS = ITEMS.register("kidney_bean_seeds",
             () -> new ItemNameBlockItem(ModBlocks.KIDNEY_BEAN_CROP.get(), new Item.Properties()
                     .tab(ModItemGroups.ALIS_BEAN_MOD)));
