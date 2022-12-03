@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#forge:seeds/kidney_bean",
+      "required": false
+    },
+    "alisbeanmod:kidney_bean_seeds"
+  ]
+}

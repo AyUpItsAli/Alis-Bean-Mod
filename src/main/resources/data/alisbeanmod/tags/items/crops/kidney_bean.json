@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#forge:crops/kidney_bean",
+      "required": false
+    },
+    "alisbeanmod:kidney_beans"
+  ]
+}

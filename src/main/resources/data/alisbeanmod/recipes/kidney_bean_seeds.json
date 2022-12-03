@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "alisbeanmod:crops/kidney_bean"
+    }
+  ],
+  "result": {
+    "item": "alisbeanmod:kidney_bean_seeds"
+  }
+}

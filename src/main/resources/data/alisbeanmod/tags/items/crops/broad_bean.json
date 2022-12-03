@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#forge:crops/broad_bean",
+      "required": false
+    },
+    "alisbeanmod:broad_beans"
+  ]
+}

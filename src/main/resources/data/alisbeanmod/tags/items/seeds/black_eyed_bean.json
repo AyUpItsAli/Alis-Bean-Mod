@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#forge:seeds/black_eyed_bean",
+      "required": false
+    },
+    "alisbeanmod:black_eyed_bean_seeds"
+  ]
+}
