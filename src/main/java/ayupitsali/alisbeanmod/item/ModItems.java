@@ -5,6 +5,7 @@ import ayupitsali.alisbeanmod.block.ModBlocks;
 import com.epherical.croptopia.util.FoodConstructor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemNameBlockItem;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -41,6 +42,12 @@ public class ModItems {
             () -> new Item(new Item.Properties()
                     .tab(ModItemGroups.ALIS_BEAN_MOD)
                     .food(FoodConstructor.createFood(FoodConstructor.REG_3))));
+
+    public static final RegistryObject<Item> BAKED_BEANS = ITEMS.register("baked_beans",
+            () -> new Item(new Item.Properties()
+                    .tab(ModItemGroups.ALIS_BEAN_MOD)
+                    .food(FoodConstructor.createFood(FoodConstructor.REG_10))
+                    .craftRemainder(Items.BOWL)));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

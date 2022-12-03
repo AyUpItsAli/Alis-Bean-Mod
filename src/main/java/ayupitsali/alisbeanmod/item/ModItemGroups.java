@@ -7,7 +7,7 @@ public class ModItemGroups {
     public static final CreativeModeTab ALIS_BEAN_MOD = new CreativeModeTab("alis_bean_mod") {
         @Override
         public ItemStack makeIcon() {
-            return new ItemStack(ModItems.HARICOT_BEANS.get());
+            return new ItemStack(ModItems.BAKED_BEANS.get());
         }
     };
 }
