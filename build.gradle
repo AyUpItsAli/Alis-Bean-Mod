@@ -16,7 +16,7 @@ plugins {
 
 apply plugin: 'org.spongepowered.mixin'
 
-version = mod_version + "-" + mc_version
+version = mc_version + '-' + mod_version
 group = 'ayupitsali.alisbeanmod'
 archivesBaseName = 'alisbeanmod'
 
