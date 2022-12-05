@@ -16,36 +16,36 @@ public class ModItems {
 
     public static final RegistryObject<Item> BLACK_EYED_BEAN_SEEDS = ITEMS.register("black_eyed_bean_seeds",
             () -> new ItemNameBlockItem(ModBlocks.BLACK_EYED_BEAN_CROP.get(), new Item.Properties()
-                    .tab(ModItemGroups.ALIS_BEAN_MOD)));
+                    .tab(ModItemGroups.BEANOLOGY)));
     public static final RegistryObject<Item> BLACK_EYED_BEANS = ITEMS.register("black_eyed_beans",
             () -> new Item(new Item.Properties()
-                    .tab(ModItemGroups.ALIS_BEAN_MOD)
+                    .tab(ModItemGroups.BEANOLOGY)
                     .food(FoodConstructor.createFood(FoodConstructor.REG_3))));
     public static final RegistryObject<Item> BROAD_BEAN_SEEDS = ITEMS.register("broad_bean_seeds",
             () -> new ItemNameBlockItem(ModBlocks.BROAD_BEAN_CROP.get(), new Item.Properties()
-                    .tab(ModItemGroups.ALIS_BEAN_MOD)));
+                    .tab(ModItemGroups.BEANOLOGY)));
     public static final RegistryObject<Item> BROAD_BEANS = ITEMS.register("broad_beans",
             () -> new Item(new Item.Properties()
-                    .tab(ModItemGroups.ALIS_BEAN_MOD)
+                    .tab(ModItemGroups.BEANOLOGY)
                     .food(FoodConstructor.createFood(FoodConstructor.REG_3))));
     public static final RegistryObject<Item> HARICOT_BEAN_SEEDS = ITEMS.register("haricot_bean_seeds",
             () -> new ItemNameBlockItem(ModBlocks.HARICOT_BEAN_CROP.get(), new Item.Properties()
-                    .tab(ModItemGroups.ALIS_BEAN_MOD)));
+                    .tab(ModItemGroups.BEANOLOGY)));
     public static final RegistryObject<Item> HARICOT_BEANS = ITEMS.register("haricot_beans",
             () -> new Item(new Item.Properties()
-                    .tab(ModItemGroups.ALIS_BEAN_MOD)
+                    .tab(ModItemGroups.BEANOLOGY)
                     .food(FoodConstructor.createFood(FoodConstructor.REG_3))));
     public static final RegistryObject<Item> KIDNEY_BEAN_SEEDS = ITEMS.register("kidney_bean_seeds",
             () -> new ItemNameBlockItem(ModBlocks.KIDNEY_BEAN_CROP.get(), new Item.Properties()
-                    .tab(ModItemGroups.ALIS_BEAN_MOD)));
+                    .tab(ModItemGroups.BEANOLOGY)));
     public static final RegistryObject<Item> KIDNEY_BEANS = ITEMS.register("kidney_beans",
             () -> new Item(new Item.Properties()
-                    .tab(ModItemGroups.ALIS_BEAN_MOD)
+                    .tab(ModItemGroups.BEANOLOGY)
                     .food(FoodConstructor.createFood(FoodConstructor.REG_3))));
 
     public static final RegistryObject<Item> BAKED_BEANS = ITEMS.register("baked_beans",
             () -> new Item(new Item.Properties()
-                    .tab(ModItemGroups.ALIS_BEAN_MOD)
+                    .tab(ModItemGroups.BEANOLOGY)
                     .food(FoodConstructor.createFood(FoodConstructor.REG_10))
                     .craftRemainder(Items.BOWL)));
 
