@@ -1,30 +1,30 @@
 modLoader="javafml"
 loaderVersion="[43,)"
 license="All rights reserved"
-issueTrackerURL="https://github.com/AyUpItsAli/Alis-Bean-Mod/issues"
+issueTrackerURL="https://github.com/AyUpItsAli/Beanology/issues"
 [[mods]]
-    modId="alisbeanmod"
+    modId="beanology"
     version="${file.jarVersion}"
-    displayName="Ali's Bean Mod"
-    displayURL="https://github.com/AyUpItsAli/Alis-Bean-Mod"
-    logoFile="alis_bean_mod_logo.png"
+    displayName="Beanology"
+    displayURL="https://github.com/AyUpItsAli/Beanology"
+    logoFile="beanology_logo.png"
     authors="AyUpItsAli"
     description='''
-    The Ultimate BEAN Experience for Minecraft!
+    The ULTIMATE bean experience for Minecraft!
     '''
-[[dependencies.alisbeanmod]]
+[[dependencies.beanology]]
     modId="forge"
     mandatory=true
     versionRange="[43,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.alisbeanmod]]
+[[dependencies.beanology]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.19.2,1.20)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.alisbeanmod]]
+[[dependencies.beanology]]
     modId="croptopia"
     mandatory=true
     versionRange="[2.1.0,)"

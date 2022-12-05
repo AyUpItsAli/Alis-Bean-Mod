@@ -1,0 +1,18 @@
+{
+  "itemGroup.alis_bean_mod": "Ali's Bean Mod",
+
+  "item.beanology.black_eyed_bean_seeds": "Black-eyed Bean Seeds",
+  "item.beanology.black_eyed_beans": "Black-eyed Beans",
+  "item.beanology.broad_bean_seeds": "Broad Bean Seeds",
+  "item.beanology.broad_beans": "Broad Beans",
+  "item.beanology.haricot_bean_seeds": "Haricot Bean Seeds",
+  "item.beanology.haricot_beans": "Haricot Beans",
+  "item.beanology.kidney_bean_seeds": "Kidney Bean Seeds",
+  "item.beanology.kidney_beans": "Kidney Beans",
+  "item.beanology.baked_beans": "Baked Beans",
+
+  "block.beanology.black_eyed_bean_crop": "Black-eyed Bean Crop",
+  "block.beanology.broad_bean_crop": "Broad Bean Crop",
+  "block.beanology.haricot_bean_crop": "Haricot Bean Crop",
+  "block.beanology.kidney_bean_crop": "Kidney Bean Crop"
+}

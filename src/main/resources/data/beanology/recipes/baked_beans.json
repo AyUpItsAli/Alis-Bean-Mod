@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:haricot_beans"
+    },
+    {
+      "tag": "forge:flour"
+    },
+    {
+      "tag": "forge:salts"
+    },
+    {
+      "tag": "forge:tomato_juices"
+    },
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "minecraft:bowl"
+    }
+  ],
+  "result": {
+    "item": "beanology:baked_beans"
+  }
+}

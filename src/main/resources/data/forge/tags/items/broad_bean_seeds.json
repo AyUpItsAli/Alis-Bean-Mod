@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "alisbeanmod:broad_bean_seeds",
+    "beanology:broad_bean_seeds",
     "#forge:seeds/broad_bean"
   ]
 }

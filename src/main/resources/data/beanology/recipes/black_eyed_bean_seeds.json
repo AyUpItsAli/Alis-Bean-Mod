@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:black_eyed_beans"
+    }
+  ],
+  "result": {
+    "item": "beanology:black_eyed_bean_seeds"
+  }
+}

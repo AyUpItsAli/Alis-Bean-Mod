@@ -17,8 +17,8 @@ plugins {
 apply plugin: 'org.spongepowered.mixin'
 
 version = mc_version + '-' + mod_version
-group = 'ayupitsali.alisbeanmod'
-archivesBaseName = 'alisbeanmod'
+group = 'ayupitsali.beanology'
+archivesBaseName = 'beanology'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -31,9 +31,9 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'alisbeanmod'
+            property 'forge.enabledGameTestNamespaces', 'beanology'
             mods {
-                alisbeanmod {
+                beanology {
                     source sourceSets.main
                 }
             }
@@ -43,9 +43,9 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'alisbeanmod'
+            property 'forge.enabledGameTestNamespaces', 'beanology'
             mods {
-                alisbeanmod {
+                beanology {
                     source sourceSets.main
                 }
             }
@@ -55,9 +55,9 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'alisbeanmod'
+            property 'forge.enabledGameTestNamespaces', 'beanology'
             mods {
-                alisbeanmod {
+                beanology {
                     source sourceSets.main
                 }
             }
@@ -67,9 +67,9 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            args '--mod', 'alisbeanmod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'beanology', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
             mods {
-                alisbeanmod {
+                beanology {
                     source sourceSets.main
                 }
             }
@@ -109,12 +109,12 @@ dependencies {
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "alisbeanmod",
-                "Specification-Vendor"    : "alisbeanmodsareus",
+                "Specification-Title"     : "beanology",
+                "Specification-Vendor"    : "beanologysareus",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "alisbeanmodsareus",
+                "Implementation-Vendor"   : "beanologysareus",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/crop",
+  "textures": {
+    "crop": "beanology:block/haricot_bean_crop_stage1"
+  }
+}

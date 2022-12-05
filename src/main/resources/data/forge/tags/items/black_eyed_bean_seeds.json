@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "alisbeanmod:black_eyed_bean_seeds",
+    "beanology:black_eyed_bean_seeds",
     "#forge:seeds/black_eyed_bean"
   ]
 }

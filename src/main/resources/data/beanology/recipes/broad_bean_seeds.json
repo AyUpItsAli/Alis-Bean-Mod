@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:broad_beans"
+    }
+  ],
+  "result": {
+    "item": "beanology:broad_bean_seeds"
+  }
+}
