@@ -2,5 +2,6 @@
   "parent": "minecraft:block/crop",
   "textures": {
     "crop": "beanology:block/black_eyed_bean_crop_stage1"
-  }
+  },
+  "render_type": "cutout"
 }
