@@ -10,7 +10,7 @@ issueTrackerURL="https://github.com/AyUpItsAli/Beanology/issues"
     logoFile="beanology_logo.png"
     authors="AyUpItsAli"
     description='''
-    The ULTIMATE bean experience for Minecraft!
+    Bean crops, bean tech and bean magic. The complete bean experience!
     '''
 [[dependencies.beanology]]
     modId="forge"
