@@ -1,0 +1,6 @@
+{
+  "type": "beanology:replace_features",
+  "replace": "croptopia:random_crop",
+  "with": "beanology:random_crop",
+  "step": "vegetal_decoration"
+}

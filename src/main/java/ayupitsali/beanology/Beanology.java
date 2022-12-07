@@ -2,6 +2,8 @@ package ayupitsali.beanology;
 
 import ayupitsali.beanology.block.ModBlocks;
 import ayupitsali.beanology.item.ModItems;
+import ayupitsali.beanology.world.biome_modifier.ModBiomeModifiers;
+import ayupitsali.beanology.world.feature.ModFeatures;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,6 +25,8 @@ public class Beanology {
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
+        ModFeatures.register(modEventBus);
+        ModBiomeModifiers.register(modEventBus);
 
         modEventBus.addListener(this::commonSetup);
 
