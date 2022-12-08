@@ -14,10 +14,7 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration;
 import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStateProvider;
-import net.minecraft.world.level.levelgen.placement.BiomeFilter;
-import net.minecraft.world.level.levelgen.placement.CountPlacement;
-import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
@@ -30,9 +27,9 @@ public class ModFeatures {
     public static final DeferredRegister<PlacedFeature> PLACED_FEATURES =
             DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, Beanology.MOD_ID);
 
-    // Same configuration as "croptopia.registry.GeneratorRegistry.RANDOM_CROP" but with Beanology crops added to it.
-    // beanology:random_crop will replace croptopia:random_crop during biome modification.
-    public static final RegistryObject<ConfiguredFeature<?, ?>> RANDOM_CROP = CONFIGURED_FEATURES.register("random_crop",
+    // Same configuration as "croptopia.registry.GeneratorRegistry.RANDOM_CROP" but with bean crops removed.
+    // "beanology:random_croptopia_crop" will replace "croptopia:random_crop" during biome modification.
+    public static final RegistryObject<ConfiguredFeature<?, ?>> RANDOM_CROPTOPIA_CROP = CONFIGURED_FEATURES.register("random_croptopia_crop",
             () -> new ConfiguredFeature<>(Feature.RANDOM_PATCH, FeatureUtils.simpleRandomPatchConfiguration(3,
                     PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(new WeightedStateProvider(new SimpleWeightedRandomList.Builder<BlockState>()
                             .add(Content.ARTICHOKE.asBlock().defaultBlockState().setValue(CroptopiaCropBlock.AGE, 7), 10)
@@ -89,24 +86,31 @@ public class ModFeatures {
                             .add(Content.VANILLA.asBlock().defaultBlockState().setValue(CroptopiaCropBlock.AGE, 7), 20)
                             .add(Content.PEPPER.asBlock().defaultBlockState().setValue(CroptopiaCropBlock.AGE, 7), 10)
                             .add(Content.TEA_LEAVES.asBlock().defaultBlockState().setValue(CroptopiaCropBlock.AGE, 7), 10)
-                            // Beans crops (including Beanology beans)
+                            .build()))))));
+
+    public static final RegistryObject<PlacedFeature> RANDOM_CROPTOPIA_CROP_PLACED = PLACED_FEATURES.register("random_croptopia_crop",
+            () -> new PlacedFeature(RANDOM_CROPTOPIA_CROP.getHolder().orElseThrow(), List.of(
+                    CountPlacement.of(3),
+                    InSquarePlacement.spread(),
+                    PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+                    BiomeFilter.biome())));
+
+    // Contains both Beanology and Croptopia bean crops.
+    public static final RegistryObject<ConfiguredFeature<?, ?>> RANDOM_BEAN_CROP = CONFIGURED_FEATURES.register("random_bean_crop",
+            () -> new ConfiguredFeature<>(Feature.RANDOM_PATCH, FeatureUtils.simpleRandomPatchConfiguration(3,
+                    PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(new WeightedStateProvider(new SimpleWeightedRandomList.Builder<BlockState>()
                             .add(Content.BLACKBEAN.asBlock().defaultBlockState().setValue(CroptopiaCropBlock.AGE, 7), 10)
                             .add(ModBlocks.BLACK_EYED_BEAN_CROP.get().defaultBlockState().setValue(BeanologyCropBlock.AGE, 7), 10)
                             .add(ModBlocks.BROAD_BEAN_CROP.get().defaultBlockState().setValue(BeanologyCropBlock.AGE, 7), 10)
-                            .add(Content.COFFEE_BEANS.asBlock().defaultBlockState().setValue(CroptopiaCropBlock.AGE, 7), 10)
+                            .add(Content.COFFEE_BEANS.asBlock().defaultBlockState().setValue(CroptopiaCropBlock.AGE, 7), 20)
                             .add(Content.GREENBEAN.asBlock().defaultBlockState().setValue(CroptopiaCropBlock.AGE, 7), 10)
                             .add(ModBlocks.HARICOT_BEAN_CROP.get().defaultBlockState().setValue(BeanologyCropBlock.AGE, 7), 10)
                             .add(ModBlocks.KIDNEY_BEAN_CROP.get().defaultBlockState().setValue(BeanologyCropBlock.AGE, 7), 10)
                             .add(Content.SOYBEAN.asBlock().defaultBlockState().setValue(CroptopiaCropBlock.AGE, 7), 10)
                             .build()))))));
 
-    // TODO:
-    // -- Add "croptopia:has_crop" biome tags for Beanology bean crops
-    // -- Override "croptopia:has_crop" biome tags for Croptopia bean crops?
-
-    public static final RegistryObject<PlacedFeature> RANDOM_CROP_PLACED = PLACED_FEATURES.register("random_crop",
-            () -> new PlacedFeature(RANDOM_CROP.getHolder().orElseThrow(), List.of(
-                    CountPlacement.of(3),
+    public static final RegistryObject<PlacedFeature> RANDOM_BEAN_CROP_PLACED = PLACED_FEATURES.register("random_bean_crop",
+            () -> new PlacedFeature(RANDOM_BEAN_CROP.getHolder().orElseThrow(), List.of(
                     InSquarePlacement.spread(),
                     PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
                     BiomeFilter.biome())));

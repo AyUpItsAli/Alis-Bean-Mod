@@ -1,0 +1,5 @@
+{
+  "type": "beanology:add_features_all_biomes",
+  "features": "beanology:random_bean_crop",
+  "step": "vegetal_decoration"
+}

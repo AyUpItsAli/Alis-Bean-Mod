@@ -15,6 +15,12 @@ public class ModBiomeModifiers {
     public static final DeferredRegister<Codec<? extends BiomeModifier>> BIOME_MODIFIER_SERIALIZERS =
             DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, Beanology.MOD_ID);
 
+    public static final RegistryObject<Codec<AddFeaturesAllBiomesBiomeModifier>> ADD_FEATURES_ALL_BIOMES_CODEC = BIOME_MODIFIER_SERIALIZERS.register("add_features_all_biomes",
+            () -> RecordCodecBuilder.create(builder -> builder.group(
+                    PlacedFeature.LIST_CODEC.fieldOf("features").forGetter(AddFeaturesAllBiomesBiomeModifier::features),
+                    Decoration.CODEC.fieldOf("step").forGetter(AddFeaturesAllBiomesBiomeModifier::step)
+            ).apply(builder, AddFeaturesAllBiomesBiomeModifier::new)));
+
     public static final RegistryObject<Codec<ReplaceFeaturesBiomeModifier>> REPLACE_FEATURES_CODEC = BIOME_MODIFIER_SERIALIZERS.register("replace_features",
             () -> RecordCodecBuilder.create(builder -> builder.group(
                     PlacedFeature.LIST_CODEC.fieldOf("replace").forGetter(ReplaceFeaturesBiomeModifier::replace),
