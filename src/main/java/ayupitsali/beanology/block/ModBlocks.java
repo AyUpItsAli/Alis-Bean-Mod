@@ -2,6 +2,7 @@ package ayupitsali.beanology.block;
 
 import ayupitsali.beanology.Beanology;
 import ayupitsali.beanology.item.ModItems;
+import ayupitsali.beanology.util.ModTags;
 import com.epherical.croptopia.register.Content;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -19,13 +20,13 @@ public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Beanology.MOD_ID);
 
     public static final RegistryObject<Block> BLACK_EYED_BEAN_CROP = BLOCKS.register("black_eyed_bean_crop",
-            () -> new BeanologyCropBlock(BlockBehaviour.Properties.copy(Content.BLACKBEAN.asBlock())));
+            () -> new BeanologyCropBlock(BlockBehaviour.Properties.copy(Content.BLACKBEAN.asBlock()), ModTags.Biomes.HAS_BLACK_EYED_BEANS));
     public static final RegistryObject<Block> BROAD_BEAN_CROP = BLOCKS.register("broad_bean_crop",
-            () -> new BeanologyCropBlock(BlockBehaviour.Properties.copy(Content.SOYBEAN.asBlock())));
+            () -> new BeanologyCropBlock(BlockBehaviour.Properties.copy(Content.SOYBEAN.asBlock()), ModTags.Biomes.HAS_BROAD_BEANS));
     public static final RegistryObject<Block> HARICOT_BEAN_CROP = BLOCKS.register("haricot_bean_crop",
-            () -> new BeanologyCropBlock(BlockBehaviour.Properties.copy(Content.SOYBEAN.asBlock())));
+            () -> new BeanologyCropBlock(BlockBehaviour.Properties.copy(Content.SOYBEAN.asBlock()), ModTags.Biomes.HAS_HARICOT_BEANS));
     public static final RegistryObject<Block> KIDNEY_BEAN_CROP = BLOCKS.register("kidney_bean_crop",
-            () -> new BeanologyCropBlock(BlockBehaviour.Properties.copy(Content.BLACKBEAN.asBlock())));
+            () -> new BeanologyCropBlock(BlockBehaviour.Properties.copy(Content.BLACKBEAN.asBlock()), ModTags.Biomes.HAS_KIDNEY_BEANS));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab) {
         RegistryObject<T> blockRegObj = BLOCKS.register(name, block);
