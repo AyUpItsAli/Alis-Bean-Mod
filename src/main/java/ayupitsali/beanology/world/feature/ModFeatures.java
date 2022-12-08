@@ -2,7 +2,7 @@ package ayupitsali.beanology.world.feature;
 
 import ayupitsali.beanology.Beanology;
 import ayupitsali.beanology.block.ModBlocks;
-import ayupitsali.beanology.block.crop.BlackEyedBeanCropBlock;
+import ayupitsali.beanology.block.BeanologyCropBlock;
 import com.epherical.croptopia.blocks.CroptopiaCropBlock;
 import com.epherical.croptopia.register.Content;
 import net.minecraft.core.Registry;
@@ -91,12 +91,12 @@ public class ModFeatures {
                             .add(Content.TEA_LEAVES.asBlock().defaultBlockState().setValue(CroptopiaCropBlock.AGE, 7), 10)
                             // Beans crops (including Beanology beans)
                             .add(Content.BLACKBEAN.asBlock().defaultBlockState().setValue(CroptopiaCropBlock.AGE, 7), 10)
-                            .add(ModBlocks.BLACK_EYED_BEAN_CROP.get().defaultBlockState().setValue(BlackEyedBeanCropBlock.AGE, 7), 10)
-                            .add(ModBlocks.BROAD_BEAN_CROP.get().defaultBlockState().setValue(BlackEyedBeanCropBlock.AGE, 7), 10)
+                            .add(ModBlocks.BLACK_EYED_BEAN_CROP.get().defaultBlockState().setValue(BeanologyCropBlock.AGE, 7), 10)
+                            .add(ModBlocks.BROAD_BEAN_CROP.get().defaultBlockState().setValue(BeanologyCropBlock.AGE, 7), 10)
                             .add(Content.COFFEE_BEANS.asBlock().defaultBlockState().setValue(CroptopiaCropBlock.AGE, 7), 10)
                             .add(Content.GREENBEAN.asBlock().defaultBlockState().setValue(CroptopiaCropBlock.AGE, 7), 10)
-                            .add(ModBlocks.HARICOT_BEAN_CROP.get().defaultBlockState().setValue(BlackEyedBeanCropBlock.AGE, 7), 10)
-                            .add(ModBlocks.KIDNEY_BEAN_CROP.get().defaultBlockState().setValue(BlackEyedBeanCropBlock.AGE, 7), 10)
+                            .add(ModBlocks.HARICOT_BEAN_CROP.get().defaultBlockState().setValue(BeanologyCropBlock.AGE, 7), 10)
+                            .add(ModBlocks.KIDNEY_BEAN_CROP.get().defaultBlockState().setValue(BeanologyCropBlock.AGE, 7), 10)
                             .add(Content.SOYBEAN.asBlock().defaultBlockState().setValue(CroptopiaCropBlock.AGE, 7), 10)
                             .build()))))));
 

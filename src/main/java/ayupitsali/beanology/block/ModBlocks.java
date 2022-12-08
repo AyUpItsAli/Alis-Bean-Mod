@@ -1,10 +1,6 @@
 package ayupitsali.beanology.block;
 
 import ayupitsali.beanology.Beanology;
-import ayupitsali.beanology.block.crop.BlackEyedBeanCropBlock;
-import ayupitsali.beanology.block.crop.BroadBeanCropBlock;
-import ayupitsali.beanology.block.crop.HaricotBeanCropBlock;
-import ayupitsali.beanology.block.crop.KidneyBeanCropBlock;
 import ayupitsali.beanology.item.ModItems;
 import com.epherical.croptopia.register.Content;
 import net.minecraft.world.item.BlockItem;
@@ -23,13 +19,13 @@ public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Beanology.MOD_ID);
 
     public static final RegistryObject<Block> BLACK_EYED_BEAN_CROP = BLOCKS.register("black_eyed_bean_crop",
-            () -> new BlackEyedBeanCropBlock(BlockBehaviour.Properties.copy(Content.BLACKBEAN.asBlock())));
+            () -> new BeanologyCropBlock(BlockBehaviour.Properties.copy(Content.BLACKBEAN.asBlock())));
     public static final RegistryObject<Block> BROAD_BEAN_CROP = BLOCKS.register("broad_bean_crop",
-            () -> new BroadBeanCropBlock(BlockBehaviour.Properties.copy(Content.SOYBEAN.asBlock())));
+            () -> new BeanologyCropBlock(BlockBehaviour.Properties.copy(Content.SOYBEAN.asBlock())));
     public static final RegistryObject<Block> HARICOT_BEAN_CROP = BLOCKS.register("haricot_bean_crop",
-            () -> new HaricotBeanCropBlock(BlockBehaviour.Properties.copy(Content.SOYBEAN.asBlock())));
+            () -> new BeanologyCropBlock(BlockBehaviour.Properties.copy(Content.SOYBEAN.asBlock())));
     public static final RegistryObject<Block> KIDNEY_BEAN_CROP = BLOCKS.register("kidney_bean_crop",
-            () -> new KidneyBeanCropBlock(BlockBehaviour.Properties.copy(Content.BLACKBEAN.asBlock())));
+            () -> new BeanologyCropBlock(BlockBehaviour.Properties.copy(Content.BLACKBEAN.asBlock())));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab) {
         RegistryObject<T> blockRegObj = BLOCKS.register(name, block);

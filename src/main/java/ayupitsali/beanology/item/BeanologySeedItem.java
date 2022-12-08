@@ -1,5 +1,6 @@
 package ayupitsali.beanology.item;
 
+import ayupitsali.beanology.block.BeanologyCropBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -9,9 +10,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FarmBlock;
 
-public class SeedItem extends ItemNameBlockItem {
-    public SeedItem(Block pBlock, Properties pProperties) {
+public class BeanologySeedItem extends ItemNameBlockItem {
+    public BeanologySeedItem(Block pBlock, Properties pProperties) {
         super(pBlock, pProperties);
+        if (pBlock instanceof BeanologyCropBlock) {
+            ((BeanologyCropBlock) pBlock).setSeed(this);
+        }
     }
 
     @Override
