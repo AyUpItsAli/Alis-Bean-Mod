@@ -1,10 +1,14 @@
 package ayupitsali.beanology.block;
 
+import ayupitsali.beanology.block.entity.ModBlockEntities;
+import ayupitsali.beanology.block.entity.SolarConvergenceAltarBlockEntity;
 import ayupitsali.beanology.block.property.SolarConvergenceAltarPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -13,13 +17,19 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -29,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.stream.Stream;
 
 
-public class SolarConvergenceAltarBlock extends Block {
+public class SolarConvergenceAltarBlock extends BaseEntityBlock {
     public static final EnumProperty<SolarConvergenceAltarPart> PART = EnumProperty.create("part", SolarConvergenceAltarPart.class);
 
     public static final VoxelShape SHAPE_LOWER = Block.box(2, 0, 2, 14, 16, 14);
@@ -124,6 +134,11 @@ public class SolarConvergenceAltarBlock extends Block {
                 if (pLevel.getBlockState(posLower).is(this)) {
                     pLevel.destroyBlock(posLower, true);
                 }
+                System.out.println("drop item");
+                BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+                if (blockEntity instanceof SolarConvergenceAltarBlockEntity) {
+                    ((SolarConvergenceAltarBlockEntity) blockEntity).dropItem();
+                }
             }
         }
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
@@ -150,5 +165,48 @@ public class SolarConvergenceAltarBlock extends Block {
     @Override
     public PushReaction getPistonPushReaction(BlockState pState) {
         return PushReaction.DESTROY;
+    }
+
+    @Override
+    public RenderShape getRenderShape(BlockState pState) {
+        return RenderShape.MODEL;
+    }
+
+    // Block Entity
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
+        return pState.getValue(PART) == SolarConvergenceAltarPart.MIDDLE ? new SolarConvergenceAltarBlockEntity(pPos, pState) : null;
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        return pState.getValue(PART) == SolarConvergenceAltarPart.MIDDLE ? createTickerHelper(pBlockEntityType, ModBlockEntities.SOLAR_CONVERGENCE_ALTAR.get(), SolarConvergenceAltarBlockEntity::tick) : null;
+    }
+
+    private SolarConvergenceAltarBlockEntity getBlockEntity(BlockState pState, Level pLevel, BlockPos pPos) {
+        return switch (pState.getValue(PART)) {
+            case UPPER -> (SolarConvergenceAltarBlockEntity) pLevel.getBlockEntity(pPos.below());
+            case MIDDLE -> (SolarConvergenceAltarBlockEntity) pLevel.getBlockEntity(pPos);
+            case LOWER -> (SolarConvergenceAltarBlockEntity) pLevel.getBlockEntity(pPos.above());
+        };
+    }
+
+    @Override
+    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+        SolarConvergenceAltarBlockEntity blockEntity = getBlockEntity(pState, pLevel, pPos);
+        ItemStack stack = pPlayer.getItemInHand(pHand);
+        if (stack.isEmpty()) {
+            pPlayer.setItemInHand(pHand, blockEntity.removeItem());
+        } else {
+            ItemStack stackToAdd = stack.copy();
+            stackToAdd.setCount(1);
+            if (blockEntity.placeItem(stackToAdd)) {
+                stack.shrink(1);
+            }
+        }
+        return InteractionResult.sidedSuccess(pLevel.isClientSide);
     }
 }

@@ -1,6 +1,7 @@
 package ayupitsali.beanology;
 
 import ayupitsali.beanology.block.ModBlocks;
+import ayupitsali.beanology.block.entity.ModBlockEntities;
 import ayupitsali.beanology.item.ModItems;
 import ayupitsali.beanology.world.biome_modifier.ModBiomeModifiers;
 import ayupitsali.beanology.world.feature.ModFeatures;
@@ -25,6 +26,7 @@ public class Beanology {
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
+        ModBlockEntities.register(modEventBus);
         ModFeatures.register(modEventBus);
         ModBiomeModifiers.register(modEventBus);
 
