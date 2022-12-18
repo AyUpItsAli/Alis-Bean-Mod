@@ -1,6 +1,7 @@
 package ayupitsali.beanology.block;
 
 import ayupitsali.beanology.Beanology;
+import ayupitsali.beanology.item.ModItemGroups;
 import ayupitsali.beanology.item.ModItems;
 import ayupitsali.beanology.util.ModTags;
 import com.epherical.croptopia.register.Content;
@@ -27,6 +28,9 @@ public class ModBlocks {
             () -> new BeanologyCropBlock(BlockBehaviour.Properties.copy(Content.SOYBEAN.asBlock()), ModTags.Biomes.HAS_HARICOT_BEANS));
     public static final RegistryObject<Block> KIDNEY_BEAN_CROP = BLOCKS.register("kidney_bean_crop",
             () -> new BeanologyCropBlock(BlockBehaviour.Properties.copy(Content.BLACKBEAN.asBlock()), ModTags.Biomes.HAS_KIDNEY_BEANS));
+
+    public static final RegistryObject<Block> SOLAR_CONVERGENCE_ALTAR = registerBlock("solar_convergence_altar",
+            SolarConvergenceAltarBlock::new, ModItemGroups.BEANOLOGY);
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab) {
         RegistryObject<T> blockRegObj = BLOCKS.register(name, block);

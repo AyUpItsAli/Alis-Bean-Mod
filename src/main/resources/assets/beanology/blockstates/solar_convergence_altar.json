@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "part=lower": {
+      "model": "beanology:block/solar_convergence_altar_lower"
+    },
+    "part=middle": {
+      "model": "beanology:block/solar_convergence_altar_middle"
+    },
+    "part=upper": {
+      "model": "beanology:block/solar_convergence_altar_upper"
+    }
+  }
+}

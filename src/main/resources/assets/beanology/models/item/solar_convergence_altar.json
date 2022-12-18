@@ -1,0 +1,29 @@
+{
+	"ambientocclusion": false,
+	"textures": {
+		"particle": "minecraft:block/cracked_stone_bricks",
+		"texture": "minecraft:block/cracked_stone_bricks"
+	},
+	"elements": [
+		{
+			"from": [2, 0, 2],
+			"to": [14, 16, 14],
+			"faces": {
+				"north": {"uv": [1, 0, 13, 16], "texture": "#texture"},
+				"east": {"uv": [1, 0, 13, 16], "texture": "#texture"},
+				"south": {"uv": [1, 0, 13, 16], "texture": "#texture"},
+				"west": {"uv": [1, 0, 13, 16], "texture": "#texture"},
+				"up": {"uv": [1, 0, 13, 16], "texture": "#texture"},
+				"down": {"uv": [1, 0, 13, 16], "texture": "#texture"}
+			}
+		}
+	],
+	"display": {},
+	"groups": [
+		{
+			"name": "lower",
+			"origin": [8, 8, 8],
+			"children": [0]
+		}
+	]
+}
