@@ -2,11 +2,13 @@ package ayupitsali.beanology;
 
 import ayupitsali.beanology.block.ModBlocks;
 import ayupitsali.beanology.block.entity.ModBlockEntities;
+import ayupitsali.beanology.block.entity.renderer.SolarConvergenceAltarBlockEntityRenderer;
 import ayupitsali.beanology.item.ModItems;
 import ayupitsali.beanology.world.biome_modifier.ModBiomeModifiers;
 import ayupitsali.beanology.world.feature.ModFeatures;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -44,6 +46,11 @@ public class Beanology {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
 
+        }
+
+        @SubscribeEvent
+        public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+            event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_CONVERGENCE_ALTAR.get(), SolarConvergenceAltarBlockEntityRenderer::new);
         }
     }
 }

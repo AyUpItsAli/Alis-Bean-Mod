@@ -134,10 +134,9 @@ public class SolarConvergenceAltarBlock extends BaseEntityBlock {
                 if (pLevel.getBlockState(posLower).is(this)) {
                     pLevel.destroyBlock(posLower, true);
                 }
-                System.out.println("drop item");
                 BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
                 if (blockEntity instanceof SolarConvergenceAltarBlockEntity) {
-                    ((SolarConvergenceAltarBlockEntity) blockEntity).dropItem();
+                    ((SolarConvergenceAltarBlockEntity) blockEntity).dropInventory();
                 }
             }
         }
@@ -199,11 +198,11 @@ public class SolarConvergenceAltarBlock extends BaseEntityBlock {
         SolarConvergenceAltarBlockEntity blockEntity = getBlockEntity(pState, pLevel, pPos);
         ItemStack stack = pPlayer.getItemInHand(pHand);
         if (stack.isEmpty()) {
-            pPlayer.setItemInHand(pHand, blockEntity.removeItem());
+            pPlayer.setItemInHand(pHand, blockEntity.removeStack());
         } else {
             ItemStack stackToAdd = stack.copy();
             stackToAdd.setCount(1);
-            if (blockEntity.placeItem(stackToAdd)) {
+            if (blockEntity.placeStack(stackToAdd)) {
                 stack.shrink(1);
             }
         }
