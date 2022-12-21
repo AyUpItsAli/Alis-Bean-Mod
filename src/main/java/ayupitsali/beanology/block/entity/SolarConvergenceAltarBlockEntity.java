@@ -1,5 +1,6 @@
 package ayupitsali.beanology.block.entity;
 
+import ayupitsali.beanology.recipe.SolarConvergenceAltarRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class SolarConvergenceAltarBlockEntity extends BlockEntity {
     private final ItemStackHandler itemStackHandler = new ItemStackHandler(1) {
@@ -40,10 +42,9 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
     }
 
     public boolean placeStack(ItemStack stack) {
-
-        // TODO: Only allow certain items to be placed via an item tag.
-
-        if (itemStackHandler.getStackInSlot(0).isEmpty()) {
+        Optional<SolarConvergenceAltarRecipe> recipe = level.getRecipeManager()
+                .getRecipeFor(SolarConvergenceAltarRecipe.Type.INSTANCE, new SimpleContainer(stack), level);
+        if (recipe.isPresent() && itemStackHandler.getStackInSlot(0).isEmpty()) {
             itemStackHandler.setStackInSlot(0, stack);
             return true;
         }
@@ -59,10 +60,25 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         return removedStack;
     }
 
+    private static Optional<SolarConvergenceAltarRecipe> getRecipe(SolarConvergenceAltarBlockEntity pBlockEntity) {
+        SimpleContainer inventory = new SimpleContainer(pBlockEntity.itemStackHandler.getSlots());
+        for (int i = 0; i < pBlockEntity.itemStackHandler.getSlots(); i++) {
+            inventory.setItem(i, pBlockEntity.itemStackHandler.getStackInSlot(i));
+        }
+        return pBlockEntity.level.getRecipeManager().getRecipeFor(SolarConvergenceAltarRecipe.Type.INSTANCE, inventory, pBlockEntity.level);
+    }
+
     public static void tick(Level pLevel, BlockPos pBlockPos, BlockState pBlockState, SolarConvergenceAltarBlockEntity pBlockEntity) {
         if (pLevel.isClientSide()) {
             return;
         }
+        Optional<SolarConvergenceAltarRecipe> recipeOptional = getRecipe(pBlockEntity);
+        recipeOptional.ifPresent((recipe) -> {
+            System.out.println(recipe.getResultItem());
+
+            // TODO: Process recipe
+
+        });
     }
 
     @Override

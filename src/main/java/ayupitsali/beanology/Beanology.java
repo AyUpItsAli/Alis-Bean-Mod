@@ -4,6 +4,7 @@ import ayupitsali.beanology.block.ModBlocks;
 import ayupitsali.beanology.block.entity.ModBlockEntities;
 import ayupitsali.beanology.block.entity.renderer.SolarConvergenceAltarBlockEntityRenderer;
 import ayupitsali.beanology.item.ModItems;
+import ayupitsali.beanology.recipe.ModRecipes;
 import ayupitsali.beanology.world.biome_modifier.ModBiomeModifiers;
 import ayupitsali.beanology.world.feature.ModFeatures;
 import com.mojang.logging.LogUtils;
@@ -29,6 +30,7 @@ public class Beanology {
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModBlockEntities.register(modEventBus);
+        ModRecipes.register(modEventBus);
         ModFeatures.register(modEventBus);
         ModBiomeModifiers.register(modEventBus);
 
