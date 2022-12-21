@@ -22,6 +22,7 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
         }
     };
 
