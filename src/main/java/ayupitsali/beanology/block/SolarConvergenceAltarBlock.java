@@ -145,7 +145,7 @@ public class SolarConvergenceAltarBlock extends BaseEntityBlock {
 
     @Override
     public void playerWillDestroy(Level pLevel, BlockPos pPos, BlockState pState, Player pPlayer) {
-        if (!pLevel.isClientSide && pPlayer.isCreative()) {
+        if (!pLevel.isClientSide() && pPlayer.isCreative()) {
             if (pState.getValue(PART) == SolarConvergenceAltarPart.UPPER) {
                 BlockPos posLower = pPos.below().below();
                 if (pLevel.getBlockState(posLower).is(this)) {
@@ -198,14 +198,19 @@ public class SolarConvergenceAltarBlock extends BaseEntityBlock {
         SolarConvergenceAltarBlockEntity blockEntity = getBlockEntity(pState, pLevel, pPos);
         ItemStack stack = pPlayer.getItemInHand(pHand);
         if (stack.isEmpty()) {
-            pPlayer.setItemInHand(pHand, blockEntity.removeStack());
+            ItemStack removedStack = blockEntity.removeStack();
+            if (!removedStack.isEmpty()) {
+                pPlayer.addItem(removedStack);
+                return InteractionResult.sidedSuccess(pLevel.isClientSide());
+            }
+            return InteractionResult.PASS;
         } else {
-            ItemStack stackToAdd = stack.copy();
-            stackToAdd.setCount(1);
-            if (blockEntity.placeStack(stackToAdd)) {
+            ItemStack stackToPlace = stack.copy();
+            stackToPlace.setCount(1);
+            if (blockEntity.placeStack(stackToPlace)) {
                 stack.shrink(1);
             }
+            return InteractionResult.sidedSuccess(pLevel.isClientSide());
         }
-        return InteractionResult.sidedSuccess(pLevel.isClientSide);
     }
 }

@@ -13,25 +13,57 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemStackHandler;
+import org.apache.commons.lang3.Range;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class SolarConvergenceAltarBlockEntity extends BlockEntity {
+
+    // TODO: Config file
+
+    public static final Range<Long> DAY_TIME_INTERVAL = Range.between(5600L, 6400L);
+    public static final Range<Long> NIGHT_TIME_INTERVAL = Range.between(17850L, 18150L);
+    public static final int MAX_BEAM_PROGRESS = 20;
+    public static final int MAX_PROCESS_TICKS = 160;
+
     private final ItemStackHandler itemStackHandler = new ItemStackHandler(1) {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return slot == 0 ? 16 : super.getSlotLimit(slot);
         }
     };
+    enum Status {
+        IDLE,
+        STARTING,
+        PROCESSING,
+        STOPPING
+    }
+    private Status status = Status.IDLE;
+    private int beamProgress = 0;
+    private int processTicks = 0;
 
     public SolarConvergenceAltarBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.SOLAR_CONVERGENCE_ALTAR.get(), pPos, pBlockState);
     }
 
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+    }
+
     public ItemStack getStackToRender() {
         return itemStackHandler.getStackInSlot(0);
+    }
+
+    public int getBeamProgress() {
+        return beamProgress;
     }
 
     public void dropInventory() {
@@ -39,12 +71,16 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         for (int i = 0; i < itemStackHandler.getSlots(); i++) {
             inventory.setItem(i, itemStackHandler.getStackInSlot(i));
         }
-        Containers.dropContents(this.level, this.worldPosition, inventory);
+        Containers.dropContents(level, worldPosition, inventory);
     }
 
     public boolean placeStack(ItemStack stack) {
+
+        // TODO: Allow placing up to 16 items.
+
         Optional<SolarConvergenceAltarRecipe> recipe = level.getRecipeManager()
                 .getRecipeFor(SolarConvergenceAltarRecipe.Type.INSTANCE, new SimpleContainer(stack), level);
+
         if (recipe.isPresent() && itemStackHandler.getStackInSlot(0).isEmpty()) {
             itemStackHandler.setStackInSlot(0, stack);
             return true;
@@ -53,6 +89,9 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
     }
 
     public ItemStack removeStack() {
+
+        // TODO: Allow removing whole stack while crouching.
+
         ItemStack removedStack = itemStackHandler.getStackInSlot(0);
         if (removedStack.isEmpty()) {
             return ItemStack.EMPTY;
@@ -61,30 +100,75 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         return removedStack;
     }
 
-    private static Optional<SolarConvergenceAltarRecipe> getRecipe(SolarConvergenceAltarBlockEntity pBlockEntity) {
-        SimpleContainer inventory = new SimpleContainer(pBlockEntity.itemStackHandler.getSlots());
-        for (int i = 0; i < pBlockEntity.itemStackHandler.getSlots(); i++) {
-            inventory.setItem(i, pBlockEntity.itemStackHandler.getStackInSlot(i));
+    private Optional<SolarConvergenceAltarRecipe> getRecipe() {
+        SimpleContainer inventory = new SimpleContainer(itemStackHandler.getSlots());
+        for (int i = 0; i < itemStackHandler.getSlots(); i++) {
+            inventory.setItem(i, itemStackHandler.getStackInSlot(i));
         }
-        return pBlockEntity.level.getRecipeManager().getRecipeFor(SolarConvergenceAltarRecipe.Type.INSTANCE, inventory, pBlockEntity.level);
+        return level.getRecipeManager().getRecipeFor(SolarConvergenceAltarRecipe.Type.INSTANCE, inventory, level);
+    }
+
+    private boolean canProcess() {
+
+        // TODO: Don't allow during thunderstorms and rain.
+
+        long currentTime = level.getDayTime();
+        return DAY_TIME_INTERVAL.contains(currentTime) || NIGHT_TIME_INTERVAL.contains(currentTime);
     }
 
     public static void tick(Level pLevel, BlockPos pBlockPos, BlockState pBlockState, SolarConvergenceAltarBlockEntity pBlockEntity) {
         if (pLevel.isClientSide()) {
             return;
         }
-        Optional<SolarConvergenceAltarRecipe> recipeOptional = getRecipe(pBlockEntity);
-        recipeOptional.ifPresent((recipe) -> {
-            System.out.println(recipe.getResultItem());
-
-            // TODO: Process recipe
-
-        });
+        Optional<SolarConvergenceAltarRecipe> recipeOptional = pBlockEntity.getRecipe();
+        if (pBlockEntity.status.equals(Status.IDLE)) {
+            if (recipeOptional.isPresent() && pBlockEntity.canProcess()) {
+                pBlockEntity.status = Status.STARTING;
+                pBlockEntity.setChanged();
+            }
+        } else if (pBlockEntity.status.equals(Status.STARTING)) {
+            if (recipeOptional.isEmpty() || !pBlockEntity.canProcess()) {
+                pBlockEntity.status = Status.STOPPING;
+            } else {
+                pBlockEntity.beamProgress++;
+                if (pBlockEntity.beamProgress >= MAX_BEAM_PROGRESS) {
+                    pBlockEntity.status = Status.PROCESSING;
+                }
+            }
+            pBlockEntity.setChanged();
+        } else if (pBlockEntity.status.equals(Status.PROCESSING)) {
+            if (recipeOptional.isEmpty() || !pBlockEntity.canProcess()) {
+                pBlockEntity.status = Status.STOPPING;
+                pBlockEntity.processTicks = 0;
+            } else {
+                pBlockEntity.processTicks++;
+                if (pBlockEntity.processTicks >= MAX_PROCESS_TICKS) {
+                    SolarConvergenceAltarRecipe recipe = recipeOptional.get();
+                    pBlockEntity.itemStackHandler.setStackInSlot(0, recipe.getResultItem());
+                    pBlockEntity.status = Status.STOPPING;
+                    pBlockEntity.processTicks = 0;
+                }
+            }
+            pBlockEntity.setChanged();
+        } else if (pBlockEntity.status.equals(Status.STOPPING)) {
+            if (recipeOptional.isPresent() && pBlockEntity.canProcess()) {
+                pBlockEntity.status = Status.STARTING;
+            } else {
+                pBlockEntity.beamProgress--;
+                if (pBlockEntity.beamProgress <= 0) {
+                    pBlockEntity.status = Status.IDLE;
+                }
+            }
+            pBlockEntity.setChanged();
+        }
     }
 
     @Override
     protected void saveAdditional(CompoundTag pTag) {
         pTag.put("inventory", itemStackHandler.serializeNBT());
+        pTag.putString("status", status.toString());
+        pTag.putInt("beamProgress", beamProgress);
+        pTag.putInt("processTicks", processTicks);
         super.saveAdditional(pTag);
     }
 
@@ -92,6 +176,9 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
     public void load(CompoundTag pTag) {
         super.load(pTag);
         itemStackHandler.deserializeNBT(pTag.getCompound("inventory"));
+        status = Status.valueOf(pTag.getString("status"));
+        beamProgress = pTag.getInt("beamProgress");
+        processTicks = pTag.getInt("processTicks");
     }
 
     @Nullable
@@ -102,8 +189,6 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
 
     @Override
     public CompoundTag getUpdateTag() {
-        CompoundTag tag = new CompoundTag();
-        tag.put("inventory", itemStackHandler.serializeNBT());
-        return tag;
+        return this.saveWithoutMetadata();
     }
 }
