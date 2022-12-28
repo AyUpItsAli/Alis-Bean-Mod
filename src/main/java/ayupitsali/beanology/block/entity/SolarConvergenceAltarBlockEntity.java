@@ -11,6 +11,7 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -103,7 +104,7 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
     }
 
     private boolean canProcess() {
-        if (level.isRaining() || level.isThundering()) {
+        if (level.isRaining() || level.isThundering() || level.getBrightness(LightLayer.SKY, worldPosition) < 15) {
             return false;
         }
         long dayTime = level.getDayTime();
