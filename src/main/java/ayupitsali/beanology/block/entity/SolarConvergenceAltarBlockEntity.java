@@ -80,30 +80,17 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         Containers.dropContents(level, worldPosition, inventory);
     }
 
-    public boolean placeStack(ItemStack stack) {
-
-        // TODO: Allow placing up to 16 items.
-
+    public ItemStack placeStack(ItemStack stack) {
         Optional<SolarConvergenceAltarRecipe> recipe = level.getRecipeManager()
                 .getRecipeFor(SolarConvergenceAltarRecipe.Type.INSTANCE, new SimpleContainer(stack), level);
-
-        if (recipe.isPresent() && itemStackHandler.getStackInSlot(0).isEmpty()) {
-            itemStackHandler.setStackInSlot(0, stack);
-            return true;
+        if (recipe.isEmpty()) {
+            return stack;
         }
-        return false;
+        return itemStackHandler.insertItem(0, stack, false);
     }
 
     public ItemStack removeStack() {
-
-        // TODO: Allow removing whole stack while crouching.
-
-        ItemStack removedStack = itemStackHandler.getStackInSlot(0);
-        if (removedStack.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-        itemStackHandler.setStackInSlot(0, ItemStack.EMPTY);
-        return removedStack;
+        return itemStackHandler.extractItem(0, itemStackHandler.getStackInSlot(0).getCount(), false);
     }
 
     private Optional<SolarConvergenceAltarRecipe> getRecipe() {
@@ -152,8 +139,9 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
             } else {
                 pBlockEntity.processTicks++;
                 if (pBlockEntity.processTicks >= MAX_PROCESS_TICKS) {
-                    SolarConvergenceAltarRecipe recipe = recipeOptional.get();
-                    pBlockEntity.itemStackHandler.setStackInSlot(0, recipe.getResultItem());
+                    ItemStack result = recipeOptional.get().getResultItem();
+                    result.setCount(pBlockEntity.itemStackHandler.getStackInSlot(0).getCount());
+                    pBlockEntity.itemStackHandler.setStackInSlot(0, result);
                     pBlockEntity.status = Status.STOPPING;
                     pBlockEntity.processTicks = 0;
                 }
@@ -170,6 +158,7 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
             }
             pBlockEntity.setChanged();
         }
+        // TODO: Altar block emits light when processing
     }
 
     @Override

@@ -34,6 +34,7 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
@@ -198,19 +199,25 @@ public class SolarConvergenceAltarBlock extends BaseEntityBlock {
         SolarConvergenceAltarBlockEntity blockEntity = getBlockEntity(pState, pLevel, pPos);
         ItemStack stack = pPlayer.getItemInHand(pHand);
         if (stack.isEmpty()) {
+            if (!pPlayer.isCrouching()) {
+                return InteractionResult.PASS;
+            }
             ItemStack removedStack = blockEntity.removeStack();
-            if (!removedStack.isEmpty()) {
+            if (removedStack.isEmpty()) {
+                return InteractionResult.PASS;
+            }
+            if (pPlayer.getInventory().contains(removedStack)) {
                 pPlayer.addItem(removedStack);
-                return InteractionResult.sidedSuccess(pLevel.isClientSide());
+            } else {
+                pPlayer.setItemInHand(pHand, removedStack);
             }
-            return InteractionResult.PASS;
         } else {
-            ItemStack stackToPlace = stack.copy();
-            stackToPlace.setCount(1);
-            if (blockEntity.placeStack(stackToPlace)) {
-                stack.shrink(1);
+            ItemStack result = blockEntity.placeStack(ItemHandlerHelper.copyStackWithSize(stack, 1));
+            if (!result.isEmpty()) {
+                return InteractionResult.PASS;
             }
-            return InteractionResult.sidedSuccess(pLevel.isClientSide());
+            stack.shrink(1);
         }
+        return InteractionResult.sidedSuccess(pLevel.isClientSide());
     }
 }
