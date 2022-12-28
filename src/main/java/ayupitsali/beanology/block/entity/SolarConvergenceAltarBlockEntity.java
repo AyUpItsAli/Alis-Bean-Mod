@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.Range;
 
@@ -52,18 +53,23 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         super(ModBlockEntities.SOLAR_CONVERGENCE_ALTAR.get(), pPos, pBlockState);
     }
 
-    @Override
-    public void setChanged() {
-        super.setChanged();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-    }
-
     public ItemStack getStackToRender() {
         return itemStackHandler.getStackInSlot(0);
     }
 
     public int getBeamProgress() {
         return beamProgress;
+    }
+
+    @Override
+    public AABB getRenderBoundingBox() {
+        return INFINITE_EXTENT_AABB;
+    }
+
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
     }
 
     public void dropInventory() {

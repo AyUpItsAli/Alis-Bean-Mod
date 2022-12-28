@@ -18,6 +18,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.phys.Vec3;
 
 public class SolarConvergenceAltarBlockEntityRenderer implements BlockEntityRenderer<SolarConvergenceAltarBlockEntity> {
     private static final ResourceLocation BEAM_LOCATION = new ResourceLocation(Beanology.MOD_ID, "textures/entity/solar_convergence_beam.png");
@@ -35,8 +36,6 @@ public class SolarConvergenceAltarBlockEntityRenderer implements BlockEntityRend
         int beamProgress = pBlockEntity.getBeamProgress();
         long gameTime = pBlockEntity.getLevel().getGameTime();
         renderSolarBeam(beamProgress, gameTime, pPoseStack, pBufferSource, pPartialTick);
-
-        // TODO: Fix solar beam not always rendered when looking up.
 
         // TODO: Different coloured beam at night (moon colour)
 
@@ -66,5 +65,20 @@ public class SolarConvergenceAltarBlockEntityRenderer implements BlockEntityRend
             BeaconRenderer.renderBeaconBeam(pPoseStack, pBufferSource, BEAM_LOCATION, pPartialTick, 1.0F, gameTime,
                     0, BeaconRenderer.MAX_RENDER_Y, DyeColor.WHITE.getTextureDiffuseColors(), radius, glowRadius);
         }
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(SolarConvergenceAltarBlockEntity pBlockEntity) {
+        return true;
+    }
+
+    @Override
+    public int getViewDistance() {
+        return 256;
+    }
+
+    @Override
+    public boolean shouldRender(SolarConvergenceAltarBlockEntity pBlockEntity, Vec3 pCameraPos) {
+        return Vec3.atCenterOf(pBlockEntity.getBlockPos()).multiply(1.0D, 0.0D, 1.0D).closerThan(pCameraPos.multiply(1.0D, 0.0D, 1.0D), (double)this.getViewDistance());
     }
 }
