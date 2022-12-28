@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.PushReaction;
@@ -42,6 +43,7 @@ import java.util.stream.Stream;
 
 public class SolarConvergenceAltarBlock extends BaseEntityBlock {
     public static final EnumProperty<SolarConvergenceAltarPart> PART = EnumProperty.create("part", SolarConvergenceAltarPart.class);
+    public static final BooleanProperty CONVERGING = BooleanProperty.create("converging");
 
     public static final VoxelShape SHAPE_LOWER = Block.box(2, 0, 2, 14, 16, 14);
     public static final VoxelShape SHAPE_MIDDLE = Stream.of(
@@ -64,8 +66,9 @@ public class SolarConvergenceAltarBlock extends BaseEntityBlock {
         super(BlockBehaviour.Properties.of(Material.STONE)
                 .requiresCorrectToolForDrops()
                 .noOcclusion()
-                .strength(1.5F, 6.0F));
-        registerDefaultState(this.stateDefinition.any().setValue(PART, SolarConvergenceAltarPart.LOWER));
+                .strength(1.5F, 6.0F)
+                .lightLevel(state -> state.getValue(CONVERGING) ? 15 : 0));
+        registerDefaultState(stateDefinition.any().setValue(PART, SolarConvergenceAltarPart.LOWER).setValue(CONVERGING, false));
     }
 
     @Override
@@ -79,7 +82,7 @@ public class SolarConvergenceAltarBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(PART);
+        pBuilder.add(PART, CONVERGING);
     }
 
     @Nullable

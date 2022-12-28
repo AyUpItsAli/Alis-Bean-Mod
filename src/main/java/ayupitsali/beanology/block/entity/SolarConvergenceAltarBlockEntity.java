@@ -1,5 +1,6 @@
 package ayupitsali.beanology.block.entity;
 
+import ayupitsali.beanology.block.SolarConvergenceAltarBlock;
 import ayupitsali.beanology.recipe.SolarConvergenceAltarRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -25,8 +26,8 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
 
     public static final Range<Long> DAY_TIME_INTERVAL = Range.between(5600L, 6400L);
     public static final Range<Long> NIGHT_TIME_INTERVAL = Range.between(17850L, 18150L);
-    public static final int MAX_BEAM_PROGRESS = 20;
-    public static final int MAX_PROCESS_TICKS = 160;
+    public static final int TOTAL_BEAM_PROGRESS = 20;
+    public static final int TOTAL_PROCESSING_TICKS = 160;
 
     private final ItemStackHandler itemStackHandler = new ItemStackHandler(1) {
         @Override
@@ -47,7 +48,7 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
     }
     private Status status = Status.IDLE;
     private int beamProgress = 0;
-    private int processTicks = 0;
+    private int processingTicks = 0;
 
     public SolarConvergenceAltarBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.SOLAR_CONVERGENCE_ALTAR.get(), pPos, pBlockState);
@@ -127,7 +128,7 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
                 pBlockEntity.status = Status.STOPPING;
             } else {
                 pBlockEntity.beamProgress++;
-                if (pBlockEntity.beamProgress >= MAX_BEAM_PROGRESS) {
+                if (pBlockEntity.beamProgress >= TOTAL_BEAM_PROGRESS) {
                     pBlockEntity.status = Status.PROCESSING;
                 }
             }
@@ -135,15 +136,15 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         } else if (pBlockEntity.status.equals(Status.PROCESSING)) {
             if (recipeOptional.isEmpty() || !pBlockEntity.canProcess()) {
                 pBlockEntity.status = Status.STOPPING;
-                pBlockEntity.processTicks = 0;
+                pBlockEntity.processingTicks = 0;
             } else {
-                pBlockEntity.processTicks++;
-                if (pBlockEntity.processTicks >= MAX_PROCESS_TICKS) {
+                pBlockEntity.processingTicks++;
+                if (pBlockEntity.processingTicks >= TOTAL_PROCESSING_TICKS) {
                     ItemStack result = recipeOptional.get().getResultItem();
                     result.setCount(pBlockEntity.itemStackHandler.getStackInSlot(0).getCount());
                     pBlockEntity.itemStackHandler.setStackInSlot(0, result);
                     pBlockEntity.status = Status.STOPPING;
-                    pBlockEntity.processTicks = 0;
+                    pBlockEntity.processingTicks = 0;
                 }
             }
             pBlockEntity.setChanged();
@@ -158,7 +159,12 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
             }
             pBlockEntity.setChanged();
         }
-        // TODO: Altar block emits light when processing
+        BlockPos pos = pBlockEntity.getBlockPos();
+        BlockState state = pLevel.getBlockState(pos);
+        boolean converging = !pBlockEntity.status.equals(Status.IDLE);
+        if (state.getValue(SolarConvergenceAltarBlock.CONVERGING) != converging) {
+            pLevel.setBlock(pos, state.setValue(SolarConvergenceAltarBlock.CONVERGING, converging), 3);
+        }
     }
 
     @Override
@@ -166,7 +172,7 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         pTag.put("inventory", itemStackHandler.serializeNBT());
         pTag.putString("status", status.toString());
         pTag.putInt("beamProgress", beamProgress);
-        pTag.putInt("processTicks", processTicks);
+        pTag.putInt("processTicks", processingTicks);
         super.saveAdditional(pTag);
     }
 
@@ -176,7 +182,7 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         itemStackHandler.deserializeNBT(pTag.getCompound("inventory"));
         status = Status.valueOf(pTag.getString("status"));
         beamProgress = pTag.getInt("beamProgress");
-        processTicks = pTag.getInt("processTicks");
+        processingTicks = pTag.getInt("processTicks");
     }
 
     @Nullable

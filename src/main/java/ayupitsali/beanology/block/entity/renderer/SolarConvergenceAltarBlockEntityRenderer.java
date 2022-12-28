@@ -59,7 +59,7 @@ public class SolarConvergenceAltarBlockEntityRenderer implements BlockEntityRend
 
     private void renderSolarBeam(ResourceLocation beamLocation, int beamProgress, long gameTime, PoseStack pPoseStack,
                                  MultiBufferSource pBufferSource, float pPartialTick) {
-        float progressFactor = (float) beamProgress / (float) SolarConvergenceAltarBlockEntity.MAX_BEAM_PROGRESS;
+        float progressFactor = (float) beamProgress / (float) SolarConvergenceAltarBlockEntity.TOTAL_BEAM_PROGRESS;
         float radius = 0.08F * progressFactor;
         float glowRadius = 0.25F * progressFactor;
         if (radius > 0) {
