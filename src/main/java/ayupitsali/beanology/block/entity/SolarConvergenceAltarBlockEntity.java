@@ -103,7 +103,7 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         return level.getRecipeManager().getRecipeFor(SolarConvergenceAltarRecipe.Type.INSTANCE, inventory, level);
     }
 
-    private boolean canProcess() {
+    private boolean canConverge() {
         if (level.isRaining() || level.isThundering() || level.getBrightness(LightLayer.SKY, worldPosition) < 15) {
             return false;
         }
@@ -120,12 +120,12 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         }
         Optional<SolarConvergenceAltarRecipe> recipeOptional = pBlockEntity.getRecipe();
         if (pBlockEntity.status.equals(Status.IDLE)) {
-            if (recipeOptional.isPresent() && pBlockEntity.canProcess()) {
+            if (recipeOptional.isPresent() && pBlockEntity.canConverge()) {
                 pBlockEntity.status = Status.STARTING;
                 pBlockEntity.setChanged();
             }
         } else if (pBlockEntity.status.equals(Status.STARTING)) {
-            if (recipeOptional.isEmpty() || !pBlockEntity.canProcess()) {
+            if (recipeOptional.isEmpty() || !pBlockEntity.canConverge()) {
                 pBlockEntity.status = Status.STOPPING;
             } else {
                 pBlockEntity.beamProgress++;
@@ -135,7 +135,7 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
             }
             pBlockEntity.setChanged();
         } else if (pBlockEntity.status.equals(Status.PROCESSING)) {
-            if (recipeOptional.isEmpty() || !pBlockEntity.canProcess()) {
+            if (recipeOptional.isEmpty() || !pBlockEntity.canConverge()) {
                 pBlockEntity.status = Status.STOPPING;
                 pBlockEntity.processingTicks = 0;
             } else {
@@ -150,7 +150,7 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
             }
             pBlockEntity.setChanged();
         } else if (pBlockEntity.status.equals(Status.STOPPING)) {
-            if (recipeOptional.isPresent() && pBlockEntity.canProcess()) {
+            if (recipeOptional.isPresent() && pBlockEntity.canConverge()) {
                 pBlockEntity.status = Status.STARTING;
             } else {
                 pBlockEntity.beamProgress--;
@@ -173,7 +173,7 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         pTag.put("inventory", itemStackHandler.serializeNBT());
         pTag.putString("status", status.toString());
         pTag.putInt("beamProgress", beamProgress);
-        pTag.putInt("processTicks", processingTicks);
+        pTag.putInt("processingTicks", processingTicks);
         super.saveAdditional(pTag);
     }
 
@@ -183,7 +183,7 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         itemStackHandler.deserializeNBT(pTag.getCompound("inventory"));
         status = Status.valueOf(pTag.getString("status"));
         beamProgress = pTag.getInt("beamProgress");
-        processingTicks = pTag.getInt("processTicks");
+        processingTicks = pTag.getInt("processingTicks");
     }
 
     @Nullable
