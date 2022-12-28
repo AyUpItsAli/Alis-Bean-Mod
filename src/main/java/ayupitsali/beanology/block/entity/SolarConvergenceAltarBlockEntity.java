@@ -115,11 +115,14 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
     }
 
     private boolean canProcess() {
-
-        // TODO: Don't allow during thunderstorms and rain.
-
-        long currentTime = level.getDayTime();
-        return DAY_TIME_INTERVAL.contains(currentTime) || NIGHT_TIME_INTERVAL.contains(currentTime);
+        if (level.isRaining() || level.isThundering()) {
+            return false;
+        }
+        long dayTime = level.getDayTime();
+        if (NIGHT_TIME_INTERVAL.contains(dayTime)) {
+            return level.getMoonBrightness() >= 0.5f;
+        }
+        return DAY_TIME_INTERVAL.contains(dayTime);
     }
 
     public static void tick(Level pLevel, BlockPos pBlockPos, BlockState pBlockState, SolarConvergenceAltarBlockEntity pBlockEntity) {

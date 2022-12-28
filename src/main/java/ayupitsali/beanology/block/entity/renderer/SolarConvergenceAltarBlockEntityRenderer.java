@@ -21,7 +21,8 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
 
 public class SolarConvergenceAltarBlockEntityRenderer implements BlockEntityRenderer<SolarConvergenceAltarBlockEntity> {
-    private static final ResourceLocation BEAM_LOCATION = new ResourceLocation(Beanology.MOD_ID, "textures/entity/solar_convergence_beam.png");
+    private static final ResourceLocation SUN_BEAM = new ResourceLocation(Beanology.MOD_ID, "textures/entity/solar_convergence_sun_beam.png");
+    private static final ResourceLocation MOON_BEAM = new ResourceLocation(Beanology.MOD_ID, "textures/entity/solar_convergence_moon_beam.png");
 
     public SolarConvergenceAltarBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
 
@@ -30,15 +31,14 @@ public class SolarConvergenceAltarBlockEntityRenderer implements BlockEntityRend
     @Override
     public void render(SolarConvergenceAltarBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack,
                        MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
-        ItemStack stack = pBlockEntity.getStackToRender();
-        int lightLevel = getLightLevel(pBlockEntity.getLevel(), pBlockEntity.getBlockPos());
-        renderItem(stack, lightLevel, pPoseStack, pBufferSource);
+        Level level = pBlockEntity.getLevel();
+        int lightLevel = getLightLevel(level, pBlockEntity.getBlockPos());
+        renderItem(pBlockEntity.getStackToRender(), lightLevel, pPoseStack, pBufferSource);
         int beamProgress = pBlockEntity.getBeamProgress();
-        long gameTime = pBlockEntity.getLevel().getGameTime();
-        renderSolarBeam(beamProgress, gameTime, pPoseStack, pBufferSource, pPartialTick);
-
-        // TODO: Different coloured beam at night (moon colour)
-
+        if (beamProgress > 0) {
+            ResourceLocation beamLocation = SolarConvergenceAltarBlockEntity.NIGHT_TIME_INTERVAL.contains(level.getDayTime()) ? MOON_BEAM : SUN_BEAM;
+            renderSolarBeam(beamLocation, beamProgress, level.getGameTime(), pPoseStack, pBufferSource, pPartialTick);
+        }
     }
 
     private int getLightLevel(Level pLevel, BlockPos pPos) {
@@ -57,12 +57,13 @@ public class SolarConvergenceAltarBlockEntityRenderer implements BlockEntityRend
         pPoseStack.popPose();
     }
 
-    private void renderSolarBeam(int beamProgress, long gameTime, PoseStack pPoseStack, MultiBufferSource pBufferSource, float pPartialTick) {
+    private void renderSolarBeam(ResourceLocation beamLocation, int beamProgress, long gameTime, PoseStack pPoseStack,
+                                 MultiBufferSource pBufferSource, float pPartialTick) {
         float progressFactor = (float) beamProgress / (float) SolarConvergenceAltarBlockEntity.MAX_BEAM_PROGRESS;
         float radius = 0.08F * progressFactor;
         float glowRadius = 0.25F * progressFactor;
         if (radius > 0) {
-            BeaconRenderer.renderBeaconBeam(pPoseStack, pBufferSource, BEAM_LOCATION, pPartialTick, 1.0F, gameTime,
+            BeaconRenderer.renderBeaconBeam(pPoseStack, pBufferSource, beamLocation, pPartialTick, 1.0F, gameTime,
                     0, BeaconRenderer.MAX_RENDER_Y, DyeColor.WHITE.getTextureDiffuseColors(), radius, glowRadius);
         }
     }
@@ -79,6 +80,7 @@ public class SolarConvergenceAltarBlockEntityRenderer implements BlockEntityRend
 
     @Override
     public boolean shouldRender(SolarConvergenceAltarBlockEntity pBlockEntity, Vec3 pCameraPos) {
-        return Vec3.atCenterOf(pBlockEntity.getBlockPos()).multiply(1.0D, 0.0D, 1.0D).closerThan(pCameraPos.multiply(1.0D, 0.0D, 1.0D), (double)this.getViewDistance());
+        return Vec3.atCenterOf(pBlockEntity.getBlockPos()).multiply(1.0D, 0.0D, 1.0D)
+                .closerThan(pCameraPos.multiply(1.0D, 0.0D, 1.0D), this.getViewDistance());
     }
 }
