@@ -38,13 +38,17 @@ public class SolarConvergenceAltarRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
-    public ItemStack getResultItem() {
-        return result.copy();
+    public ResourceLocation getId() {
+        return id;
+    }
+
+    public Ingredient getIngredient() {
+        return ingredient;
     }
 
     @Override
-    public ResourceLocation getId() {
-        return id;
+    public ItemStack getResultItem() {
+        return result.copy();
     }
 
     @Override
