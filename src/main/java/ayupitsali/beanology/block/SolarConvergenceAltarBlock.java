@@ -202,7 +202,7 @@ public class SolarConvergenceAltarBlock extends BaseEntityBlock {
         SolarConvergenceAltarBlockEntity blockEntity = getBlockEntity(pState, pLevel, pPos);
         ItemStack stack = pPlayer.getItemInHand(pHand);
         if (stack.isEmpty()) {
-            if (!pPlayer.isCrouching()) {
+            if (!pPlayer.isCrouching() && blockEntity.getRecipe().isPresent()) {
                 return InteractionResult.PASS;
             }
             ItemStack removedStack = blockEntity.removeStack();

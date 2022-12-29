@@ -95,7 +95,7 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         return itemStackHandler.extractItem(0, itemStackHandler.getStackInSlot(0).getCount(), false);
     }
 
-    private Optional<SolarConvergenceAltarRecipe> getRecipe() {
+    public Optional<SolarConvergenceAltarRecipe> getRecipe() {
         SimpleContainer inventory = new SimpleContainer(itemStackHandler.getSlots());
         for (int i = 0; i < itemStackHandler.getSlots(); i++) {
             inventory.setItem(i, itemStackHandler.getStackInSlot(i));
