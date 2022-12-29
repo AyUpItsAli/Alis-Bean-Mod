@@ -36,7 +36,7 @@ public class SolarConvergenceAltarBlockEntityRenderer implements BlockEntityRend
         renderItem(pBlockEntity.getStackToRender(), lightLevel, pPoseStack, pBufferSource);
         int beamProgress = pBlockEntity.getBeamProgress();
         if (beamProgress > 0) {
-            ResourceLocation beamLocation = SolarConvergenceAltarBlockEntity.NIGHT_TIME_INTERVAL.contains(level.getDayTime()) ? MOON_BEAM : SUN_BEAM;
+            ResourceLocation beamLocation = level.getDayTime() >= 13000 ? MOON_BEAM : SUN_BEAM;
             renderSolarBeam(beamLocation, beamProgress, level.getGameTime(), pPoseStack, pBufferSource, pPartialTick);
         }
     }

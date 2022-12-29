@@ -42,12 +42,13 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         }
     };
     enum Status {
-        IDLE,
+        INACTIVE,
         STARTING,
+        ACTIVE,
         PROCESSING,
         STOPPING
     }
-    private Status status = Status.IDLE;
+    private Status status = Status.INACTIVE;
     private int beamProgress = 0;
     private int processingTicks = 0;
 
@@ -119,24 +120,35 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
             return;
         }
         Optional<SolarConvergenceAltarRecipe> recipeOptional = pBlockEntity.getRecipe();
-        if (pBlockEntity.status.equals(Status.IDLE)) {
-            if (recipeOptional.isPresent() && pBlockEntity.canConverge()) {
+        if (pBlockEntity.status.equals(Status.INACTIVE)) {
+            if (pBlockEntity.canConverge()) {
                 pBlockEntity.status = Status.STARTING;
                 pBlockEntity.setChanged();
             }
         } else if (pBlockEntity.status.equals(Status.STARTING)) {
-            if (recipeOptional.isEmpty() || !pBlockEntity.canConverge()) {
+            if (!pBlockEntity.canConverge()) {
                 pBlockEntity.status = Status.STOPPING;
             } else {
                 pBlockEntity.beamProgress++;
                 if (pBlockEntity.beamProgress >= TOTAL_BEAM_PROGRESS) {
-                    pBlockEntity.status = Status.PROCESSING;
+                    pBlockEntity.status = Status.ACTIVE;
                 }
             }
             pBlockEntity.setChanged();
-        } else if (pBlockEntity.status.equals(Status.PROCESSING)) {
-            if (recipeOptional.isEmpty() || !pBlockEntity.canConverge()) {
+        } else if (pBlockEntity.status.equals(Status.ACTIVE)) {
+            if (!pBlockEntity.canConverge()) {
                 pBlockEntity.status = Status.STOPPING;
+                pBlockEntity.setChanged();
+            } else if (recipeOptional.isPresent()) {
+                pBlockEntity.status = Status.PROCESSING;
+                pBlockEntity.setChanged();
+            }
+        } else if (pBlockEntity.status.equals(Status.PROCESSING)) {
+            if (!pBlockEntity.canConverge()) {
+                pBlockEntity.status = Status.STOPPING;
+                pBlockEntity.processingTicks = 0;
+            } else if (recipeOptional.isEmpty()) {
+                pBlockEntity.status = Status.ACTIVE;
                 pBlockEntity.processingTicks = 0;
             } else {
                 pBlockEntity.processingTicks++;
@@ -144,25 +156,25 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
                     ItemStack result = recipeOptional.get().getResultItem();
                     result.setCount(pBlockEntity.itemStackHandler.getStackInSlot(0).getCount());
                     pBlockEntity.itemStackHandler.setStackInSlot(0, result);
-                    pBlockEntity.status = Status.STOPPING;
+                    pBlockEntity.status = Status.ACTIVE;
                     pBlockEntity.processingTicks = 0;
                 }
             }
             pBlockEntity.setChanged();
         } else if (pBlockEntity.status.equals(Status.STOPPING)) {
-            if (recipeOptional.isPresent() && pBlockEntity.canConverge()) {
+            if (pBlockEntity.canConverge()) {
                 pBlockEntity.status = Status.STARTING;
             } else {
                 pBlockEntity.beamProgress--;
                 if (pBlockEntity.beamProgress <= 0) {
-                    pBlockEntity.status = Status.IDLE;
+                    pBlockEntity.status = Status.INACTIVE;
                 }
             }
             pBlockEntity.setChanged();
         }
         BlockPos pos = pBlockEntity.getBlockPos();
         BlockState state = pLevel.getBlockState(pos);
-        boolean converging = !pBlockEntity.status.equals(Status.IDLE);
+        boolean converging = !pBlockEntity.status.equals(Status.INACTIVE);
         if (state.getValue(SolarConvergenceAltarBlock.CONVERGING) != converging) {
             pLevel.setBlock(pos, state.setValue(SolarConvergenceAltarBlock.CONVERGING, converging), 3);
         }
