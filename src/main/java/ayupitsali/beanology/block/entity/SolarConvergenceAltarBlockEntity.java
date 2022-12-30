@@ -108,12 +108,20 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         return DAY_TIME_INTERVAL.contains(dayTime);
     }
 
+    private void setStatus(SolarConvergenceAltarStatus status) {
+        level.setBlock(worldPosition, getBlockState().setValue(SolarConvergenceAltarBlock.STATUS, status), 3);
+        BlockPos above = worldPosition.above();
+        level.setBlock(above, level.getBlockState(above).setValue(SolarConvergenceAltarBlock.STATUS, status), 3);
+        BlockPos below = worldPosition.below();
+        level.setBlock(below, level.getBlockState(below).setValue(SolarConvergenceAltarBlock.STATUS, status), 3);
+    }
+
     public static void inactiveTick(Level pLevel, BlockPos pBlockPos, BlockState pBlockState, SolarConvergenceAltarBlockEntity pBlockEntity) {
         if (pLevel.isClientSide()) {
             return;
         }
         if (pBlockEntity.canConverge()) {
-            pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.STARTING), 3);
+            pBlockEntity.setStatus(SolarConvergenceAltarStatus.STARTING);
         }
     }
 
@@ -122,12 +130,12 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
             return;
         }
         if (!pBlockEntity.canConverge()) {
-            pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.STOPPING), 3);
+            pBlockEntity.setStatus(SolarConvergenceAltarStatus.STOPPING);
         } else {
             pBlockEntity.beamProgress++;
             if (pBlockEntity.beamProgress >= TOTAL_BEAM_PROGRESS) {
                 pBlockEntity.beamProgress = TOTAL_BEAM_PROGRESS;
-                pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.ACTIVE), 3);
+                pBlockEntity.setStatus(SolarConvergenceAltarStatus.ACTIVE);
             }
             pBlockEntity.setChanged();
         }
@@ -138,9 +146,9 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
             return;
         }
         if (!pBlockEntity.canConverge()) {
-            pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.STOPPING), 3);
+            pBlockEntity.setStatus(SolarConvergenceAltarStatus.STOPPING);
         } else if (pBlockEntity.getRecipe().isPresent()) {
-            pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.PROCESSING), 3);
+            pBlockEntity.setStatus(SolarConvergenceAltarStatus.PROCESSING);
         }
     }
 
@@ -151,10 +159,10 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         Optional<SolarConvergenceAltarRecipe> recipeOptional = pBlockEntity.getRecipe();
         if (!pBlockEntity.canConverge()) {
             pBlockEntity.processingTicks = 0;
-            pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.STOPPING), 3);
+            pBlockEntity.setStatus(SolarConvergenceAltarStatus.STOPPING);
         } else if (recipeOptional.isEmpty()) {
             pBlockEntity.processingTicks = 0;
-            pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.ACTIVE), 3);
+            pBlockEntity.setStatus(SolarConvergenceAltarStatus.ACTIVE);
         } else {
             pBlockEntity.processingTicks++;
             if (pBlockEntity.processingTicks >= TOTAL_PROCESSING_TICKS) {
@@ -162,7 +170,7 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
                 ItemStack result = recipeOptional.get().getResultItem();
                 result.setCount(pBlockEntity.itemStackHandler.getStackInSlot(0).getCount());
                 pBlockEntity.itemStackHandler.setStackInSlot(0, result);
-                pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.ACTIVE), 3);
+                pBlockEntity.setStatus(SolarConvergenceAltarStatus.ACTIVE);
             }
             pBlockEntity.setChanged();
         }
@@ -173,12 +181,12 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
             return;
         }
         if (pBlockEntity.canConverge()) {
-            pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.STOPPING), 3);
+            pBlockEntity.setStatus(SolarConvergenceAltarStatus.STARTING);
         } else {
             pBlockEntity.beamProgress--;
             if (pBlockEntity.beamProgress <= 0) {
                 pBlockEntity.beamProgress = 0;
-                pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.INACTIVE), 3);
+                pBlockEntity.setStatus(SolarConvergenceAltarStatus.INACTIVE);
             }
             pBlockEntity.setChanged();
         }
