@@ -24,7 +24,7 @@ public class SolarConvergenceAltarRecipeCategory implements IRecipeCategory<Sola
     private final IDrawable icon;
 
     public SolarConvergenceAltarRecipeCategory(IGuiHelper helper) {
-        this.background = helper.drawableBuilder(BACKGROUND_TEXTURE, 0, 0, 96, 102).setTextureSize(96, 102).build();
+        this.background = helper.drawableBuilder(BACKGROUND_TEXTURE, 0, 0, 84, 98).setTextureSize(84, 98).build();
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, ALTAR_STACK);
     }
 
@@ -51,7 +51,7 @@ public class SolarConvergenceAltarRecipeCategory implements IRecipeCategory<Sola
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, SolarConvergenceAltarRecipe recipe, IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.INPUT, 11, 57).addIngredients(recipe.getIngredient());
-        builder.addSlot(RecipeIngredientRole.CATALYST, 40, 75).addItemStack(ALTAR_STACK);
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 69, 57).addItemStack(recipe.getResultItem());
+        builder.addSlot(RecipeIngredientRole.CATALYST, 34, 71).addItemStack(ALTAR_STACK);
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 57, 57).addItemStack(recipe.getResultItem());
     }
 }
