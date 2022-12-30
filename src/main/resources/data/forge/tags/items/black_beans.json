@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "_comment": "Simply an alias which includes a space between 'black' and 'beans', because it annoys me...",
+  "values": [
+    "#forge:blackbeans"
+  ]
+}

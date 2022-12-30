@@ -1,0 +1,9 @@
+{
+  "type": "beanology:solar_converging",
+  "ingredient": {
+    "tag": "forge:soybeans"
+  },
+  "result": {
+    "item": "beanology:charged_soybeans"
+  }
+}

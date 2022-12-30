@@ -1,0 +1,9 @@
+{
+  "type": "beanology:solar_converging",
+  "ingredient": {
+    "item": "minecraft:cocoa_beans"
+  },
+  "result": {
+    "item": "beanology:charged_cocoa_beans"
+  }
+}

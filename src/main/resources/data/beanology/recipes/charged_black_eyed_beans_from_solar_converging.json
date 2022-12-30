@@ -1,0 +1,9 @@
+{
+  "type": "beanology:solar_converging",
+  "ingredient": {
+    "tag": "forge:black_eyed_beans"
+  },
+  "result": {
+    "item": "beanology:charged_black_eyed_beans"
+  }
+}

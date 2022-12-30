@@ -48,6 +48,25 @@ public class ModItems {
                     .food(FoodConstructor.createFood(FoodConstructor.REG_10))
                     .craftRemainder(Items.BOWL)));
 
+    public static final RegistryObject<Item> CHARGED_BLACK_BEANS = ITEMS.register("charged_black_beans",
+            () -> new Item(new Item.Properties().tab(ModItemGroups.BEANOLOGY)));
+    public static final RegistryObject<Item> CHARGED_BLACK_EYED_BEANS = ITEMS.register("charged_black_eyed_beans",
+            () -> new Item(new Item.Properties().tab(ModItemGroups.BEANOLOGY)));
+    public static final RegistryObject<Item> CHARGED_BROAD_BEANS = ITEMS.register("charged_broad_beans",
+            () -> new Item(new Item.Properties().tab(ModItemGroups.BEANOLOGY)));
+    public static final RegistryObject<Item> CHARGED_COCOA_BEANS = ITEMS.register("charged_cocoa_beans",
+            () -> new Item(new Item.Properties().tab(ModItemGroups.BEANOLOGY)));
+    public static final RegistryObject<Item> CHARGED_COFFEE_BEANS = ITEMS.register("charged_coffee_beans",
+            () -> new Item(new Item.Properties().tab(ModItemGroups.BEANOLOGY)));
+    public static final RegistryObject<Item> CHARGED_GREEN_BEAN = ITEMS.register("charged_green_bean",
+            () -> new Item(new Item.Properties().tab(ModItemGroups.BEANOLOGY)));
+    public static final RegistryObject<Item> CHARGED_HARICOT_BEANS = ITEMS.register("charged_haricot_beans",
+            () -> new Item(new Item.Properties().tab(ModItemGroups.BEANOLOGY)));
+    public static final RegistryObject<Item> CHARGED_KIDNEY_BEANS = ITEMS.register("charged_kidney_beans",
+            () -> new Item(new Item.Properties().tab(ModItemGroups.BEANOLOGY)));
+    public static final RegistryObject<Item> CHARGED_SOYBEANS = ITEMS.register("charged_soybeans",
+            () -> new Item(new Item.Properties().tab(ModItemGroups.BEANOLOGY)));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

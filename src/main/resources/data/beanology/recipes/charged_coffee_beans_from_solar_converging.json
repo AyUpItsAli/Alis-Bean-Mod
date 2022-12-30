@@ -1,0 +1,9 @@
+{
+  "type": "beanology:solar_converging",
+  "ingredient": {
+    "tag": "forge:coffee_beans"
+  },
+  "result": {
+    "item": "beanology:charged_coffee_beans"
+  }
+}
