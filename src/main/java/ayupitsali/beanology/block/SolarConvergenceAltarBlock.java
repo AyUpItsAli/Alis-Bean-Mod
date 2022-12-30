@@ -94,7 +94,7 @@ public class SolarConvergenceAltarBlock extends BaseEntityBlock {
         BlockState middle = level.getBlockState(lowerPos.above());
         BlockState upper = level.getBlockState(lowerPos.above().above());
         if (lowerPos.getY() < level.getMaxBuildHeight() - 2 && middle.canBeReplaced(pContext) && upper.canBeReplaced(pContext)) {
-            return this.defaultBlockState().setValue(PART, SolarConvergenceAltarPart.LOWER);
+            return defaultBlockState().setValue(PART, SolarConvergenceAltarPart.LOWER);
         }
         return null;
     }
@@ -108,7 +108,7 @@ public class SolarConvergenceAltarBlock extends BaseEntityBlock {
     @Override
     public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
         BlockState stateBelow = pLevel.getBlockState(pPos.below());
-        return pState.getValue(PART) == SolarConvergenceAltarPart.LOWER ? super.canSurvive(pState, pLevel, pPos) : stateBelow.is(this);
+        return pState.getValue(PART).equals(SolarConvergenceAltarPart.LOWER) ? super.canSurvive(pState, pLevel, pPos) : stateBelow.is(this);
     }
 
     @Override
@@ -129,12 +129,12 @@ public class SolarConvergenceAltarBlock extends BaseEntityBlock {
     @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (!(pNewState.getBlock() instanceof SolarConvergenceAltarBlock)) {
-            if (pState.getValue(PART) == SolarConvergenceAltarPart.UPPER) {
+            if (pState.getValue(PART).equals(SolarConvergenceAltarPart.UPPER)) {
                 BlockPos posLower = pPos.below().below();
                 if (pLevel.getBlockState(posLower).is(this)) {
                     pLevel.destroyBlock(posLower, true);
                 }
-            } else if (pState.getValue(PART) == SolarConvergenceAltarPart.MIDDLE) {
+            } else if (pState.getValue(PART).equals(SolarConvergenceAltarPart.MIDDLE)) {
                 BlockPos posLower = pPos.below();
                 if (pLevel.getBlockState(posLower).is(this)) {
                     pLevel.destroyBlock(posLower, true);
@@ -151,12 +151,12 @@ public class SolarConvergenceAltarBlock extends BaseEntityBlock {
     @Override
     public void playerWillDestroy(Level pLevel, BlockPos pPos, BlockState pState, Player pPlayer) {
         if (!pLevel.isClientSide() && pPlayer.isCreative()) {
-            if (pState.getValue(PART) == SolarConvergenceAltarPart.UPPER) {
+            if (pState.getValue(PART).equals(SolarConvergenceAltarPart.UPPER)) {
                 BlockPos posLower = pPos.below().below();
                 if (pLevel.getBlockState(posLower).is(this)) {
                     pLevel.destroyBlock(posLower, false);
                 }
-            } else if (pState.getValue(PART) == SolarConvergenceAltarPart.MIDDLE) {
+            } else if (pState.getValue(PART).equals(SolarConvergenceAltarPart.MIDDLE)) {
                 BlockPos posLower = pPos.below();
                 if (pLevel.getBlockState(posLower).is(this)) {
                     pLevel.destroyBlock(posLower, false);
@@ -181,13 +181,13 @@ public class SolarConvergenceAltarBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return pState.getValue(PART) == SolarConvergenceAltarPart.MIDDLE ? new SolarConvergenceAltarBlockEntity(pPos, pState) : null;
+        return pState.getValue(PART).equals(SolarConvergenceAltarPart.MIDDLE) ? new SolarConvergenceAltarBlockEntity(pPos, pState) : null;
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        if (pState.getValue(PART) == SolarConvergenceAltarPart.MIDDLE) {
+        if (pState.getValue(PART).equals(SolarConvergenceAltarPart.MIDDLE)) {
             return switch (pState.getValue(STATUS)) {
                 case INACTIVE -> createTickerHelper(pBlockEntityType, ModBlockEntities.SOLAR_CONVERGENCE_ALTAR.get(), SolarConvergenceAltarBlockEntity::inactiveTick);
                 case STARTING -> createTickerHelper(pBlockEntityType, ModBlockEntities.SOLAR_CONVERGENCE_ALTAR.get(), SolarConvergenceAltarBlockEntity::startingTick);
