@@ -68,7 +68,8 @@ public class SolarConvergenceAltarBlock extends BaseEntityBlock {
                 .requiresCorrectToolForDrops()
                 .noOcclusion()
                 .strength(1.5F, 6.0F)
-                .lightLevel(state -> state.getValue(STATUS).equals(SolarConvergenceAltarStatus.INACTIVE) ? 0 : 15));
+                .lightLevel(state -> !state.getValue(PART).equals(SolarConvergenceAltarPart.MIDDLE) ||
+                        state.getValue(STATUS).equals(SolarConvergenceAltarStatus.INACTIVE) ? 0 : 15));
         registerDefaultState(stateDefinition.any().setValue(PART, SolarConvergenceAltarPart.LOWER).setValue(STATUS, SolarConvergenceAltarStatus.INACTIVE));
     }
 
