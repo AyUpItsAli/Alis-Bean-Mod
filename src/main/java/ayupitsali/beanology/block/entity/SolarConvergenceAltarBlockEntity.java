@@ -4,10 +4,12 @@ import ayupitsali.beanology.block.SolarConvergenceAltarBlock;
 import ayupitsali.beanology.block.property.SolarConvergenceAltarStatus;
 import ayupitsali.beanology.recipe.SolarConvergenceAltarRecipe;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
@@ -154,25 +156,39 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
 
     public static void processingTick(Level pLevel, BlockPos pBlockPos, BlockState pBlockState, SolarConvergenceAltarBlockEntity pBlockEntity) {
         if (pLevel.isClientSide()) {
-            return;
-        }
-        Optional<SolarConvergenceAltarRecipe> recipeOptional = pBlockEntity.getRecipe();
-        if (!pBlockEntity.canConverge()) {
-            pBlockEntity.processingTicks = 0;
-            pBlockEntity.setStatus(SolarConvergenceAltarStatus.STOPPING);
-        } else if (recipeOptional.isEmpty()) {
-            pBlockEntity.processingTicks = 0;
-            pBlockEntity.setStatus(SolarConvergenceAltarStatus.ACTIVE);
-        } else {
-            pBlockEntity.processingTicks++;
-            if (pBlockEntity.processingTicks >= TOTAL_PROCESSING_TICKS) {
-                pBlockEntity.processingTicks = 0;
-                ItemStack result = recipeOptional.get().getResultItem();
-                result.setCount(pBlockEntity.itemStackHandler.getStackInSlot(0).getCount());
-                pBlockEntity.itemStackHandler.setStackInSlot(0, result);
-                pBlockEntity.setStatus(SolarConvergenceAltarStatus.ACTIVE);
+            RandomSource randomSource = pLevel.random;
+            if (randomSource.nextFloat() < 0.5) {
+                for (int i = 0; i < randomSource.nextInt(2) + 2; i++) {
+                    double x = randomSource.nextBoolean() ? 1.0D : -1.0D;
+                    double z = randomSource.nextBoolean() ? 1.0D : -1.0D;
+                    pLevel.addParticle(ParticleTypes.ELECTRIC_SPARK,
+                            ((double) pBlockPos.getX()) + 0.5D + randomSource.nextDouble() / 4.0D * x,
+                            ((double) pBlockPos.getY()) + 0.35D,
+                            ((double) pBlockPos.getZ()) + 0.5D + randomSource.nextDouble() / 4.0D * z,
+                            randomSource.nextDouble() / 4.0D * x,
+                            0.01D + randomSource.nextDouble() / 4.0D,
+                            randomSource.nextDouble() / 4.0D * z);
+                }
             }
-            pBlockEntity.setChanged();
+        } else {
+            Optional<SolarConvergenceAltarRecipe> recipeOptional = pBlockEntity.getRecipe();
+            if (!pBlockEntity.canConverge()) {
+                pBlockEntity.processingTicks = 0;
+                pBlockEntity.setStatus(SolarConvergenceAltarStatus.STOPPING);
+            } else if (recipeOptional.isEmpty()) {
+                pBlockEntity.processingTicks = 0;
+                pBlockEntity.setStatus(SolarConvergenceAltarStatus.ACTIVE);
+            } else {
+                pBlockEntity.processingTicks++;
+                if (pBlockEntity.processingTicks >= TOTAL_PROCESSING_TICKS) {
+                    pBlockEntity.processingTicks = 0;
+                    ItemStack result = recipeOptional.get().getResultItem();
+                    result.setCount(pBlockEntity.itemStackHandler.getStackInSlot(0).getCount());
+                    pBlockEntity.itemStackHandler.setStackInSlot(0, result);
+                    pBlockEntity.setStatus(SolarConvergenceAltarStatus.ACTIVE);
+                }
+                pBlockEntity.setChanged();
+            }
         }
     }
 
