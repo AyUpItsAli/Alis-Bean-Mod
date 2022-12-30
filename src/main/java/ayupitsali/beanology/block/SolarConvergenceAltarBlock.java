@@ -3,6 +3,7 @@ package ayupitsali.beanology.block;
 import ayupitsali.beanology.block.entity.ModBlockEntities;
 import ayupitsali.beanology.block.entity.SolarConvergenceAltarBlockEntity;
 import ayupitsali.beanology.block.property.SolarConvergenceAltarPart;
+import ayupitsali.beanology.block.property.SolarConvergenceAltarStatus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -43,7 +44,7 @@ import java.util.stream.Stream;
 
 public class SolarConvergenceAltarBlock extends BaseEntityBlock {
     public static final EnumProperty<SolarConvergenceAltarPart> PART = EnumProperty.create("part", SolarConvergenceAltarPart.class);
-    public static final BooleanProperty CONVERGING = BooleanProperty.create("converging");
+    public static final EnumProperty<SolarConvergenceAltarStatus> STATUS = EnumProperty.create("status", SolarConvergenceAltarStatus.class);
 
     public static final VoxelShape SHAPE_LOWER = Block.box(2, 0, 2, 14, 16, 14);
     public static final VoxelShape SHAPE_MIDDLE = Stream.of(
@@ -67,8 +68,8 @@ public class SolarConvergenceAltarBlock extends BaseEntityBlock {
                 .requiresCorrectToolForDrops()
                 .noOcclusion()
                 .strength(1.5F, 6.0F)
-                .lightLevel(state -> state.getValue(CONVERGING) ? 15 : 0));
-        registerDefaultState(stateDefinition.any().setValue(PART, SolarConvergenceAltarPart.LOWER).setValue(CONVERGING, false));
+                .lightLevel(state -> state.getValue(STATUS).equals(SolarConvergenceAltarStatus.INACTIVE) ? 0 : 15));
+        registerDefaultState(stateDefinition.any().setValue(PART, SolarConvergenceAltarPart.LOWER).setValue(STATUS, SolarConvergenceAltarStatus.INACTIVE));
     }
 
     @Override
@@ -82,7 +83,7 @@ public class SolarConvergenceAltarBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(PART, CONVERGING);
+        pBuilder.add(PART, STATUS);
     }
 
     @Nullable
@@ -186,7 +187,16 @@ public class SolarConvergenceAltarBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return pState.getValue(PART) == SolarConvergenceAltarPart.MIDDLE ? createTickerHelper(pBlockEntityType, ModBlockEntities.SOLAR_CONVERGENCE_ALTAR.get(), SolarConvergenceAltarBlockEntity::tick) : null;
+        if (pState.getValue(PART) == SolarConvergenceAltarPart.MIDDLE) {
+            return switch (pState.getValue(STATUS)) {
+                case INACTIVE -> createTickerHelper(pBlockEntityType, ModBlockEntities.SOLAR_CONVERGENCE_ALTAR.get(), SolarConvergenceAltarBlockEntity::inactiveTick);
+                case STARTING -> createTickerHelper(pBlockEntityType, ModBlockEntities.SOLAR_CONVERGENCE_ALTAR.get(), SolarConvergenceAltarBlockEntity::startingTick);
+                case ACTIVE -> createTickerHelper(pBlockEntityType, ModBlockEntities.SOLAR_CONVERGENCE_ALTAR.get(), SolarConvergenceAltarBlockEntity::activeTick);
+                case PROCESSING -> createTickerHelper(pBlockEntityType, ModBlockEntities.SOLAR_CONVERGENCE_ALTAR.get(), SolarConvergenceAltarBlockEntity::processingTick);
+                case STOPPING -> createTickerHelper(pBlockEntityType, ModBlockEntities.SOLAR_CONVERGENCE_ALTAR.get(), SolarConvergenceAltarBlockEntity::stoppingTick);
+            };
+        }
+        return null;
     }
 
     private SolarConvergenceAltarBlockEntity getBlockEntity(BlockState pState, Level pLevel, BlockPos pPos) {

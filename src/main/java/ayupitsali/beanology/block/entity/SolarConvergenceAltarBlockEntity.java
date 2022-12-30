@@ -1,6 +1,7 @@
 package ayupitsali.beanology.block.entity;
 
 import ayupitsali.beanology.block.SolarConvergenceAltarBlock;
+import ayupitsali.beanology.block.property.SolarConvergenceAltarStatus;
 import ayupitsali.beanology.recipe.SolarConvergenceAltarRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -41,14 +42,6 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
             return slot == 0 ? 16 : super.getSlotLimit(slot);
         }
     };
-    enum Status {
-        INACTIVE,
-        STARTING,
-        ACTIVE,
-        PROCESSING,
-        STOPPING
-    }
-    private Status status = Status.INACTIVE;
     private int beamProgress = 0;
     private int processingTicks = 0;
 
@@ -115,75 +108,85 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
         return DAY_TIME_INTERVAL.contains(dayTime);
     }
 
-    public static void tick(Level pLevel, BlockPos pBlockPos, BlockState pBlockState, SolarConvergenceAltarBlockEntity pBlockEntity) {
+    public static void inactiveTick(Level pLevel, BlockPos pBlockPos, BlockState pBlockState, SolarConvergenceAltarBlockEntity pBlockEntity) {
+        if (pLevel.isClientSide()) {
+            return;
+        }
+        if (pBlockEntity.canConverge()) {
+            pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.STARTING), 3);
+        }
+    }
+
+    public static void startingTick(Level pLevel, BlockPos pBlockPos, BlockState pBlockState, SolarConvergenceAltarBlockEntity pBlockEntity) {
+        if (pLevel.isClientSide()) {
+            return;
+        }
+        if (!pBlockEntity.canConverge()) {
+            pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.STOPPING), 3);
+        } else {
+            pBlockEntity.beamProgress++;
+            if (pBlockEntity.beamProgress >= TOTAL_BEAM_PROGRESS) {
+                pBlockEntity.beamProgress = TOTAL_BEAM_PROGRESS;
+                pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.ACTIVE), 3);
+            }
+            pBlockEntity.setChanged();
+        }
+    }
+
+    public static void activeTick(Level pLevel, BlockPos pBlockPos, BlockState pBlockState, SolarConvergenceAltarBlockEntity pBlockEntity) {
+        if (pLevel.isClientSide()) {
+            return;
+        }
+        if (!pBlockEntity.canConverge()) {
+            pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.STOPPING), 3);
+        } else if (pBlockEntity.getRecipe().isPresent()) {
+            pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.PROCESSING), 3);
+        }
+    }
+
+    public static void processingTick(Level pLevel, BlockPos pBlockPos, BlockState pBlockState, SolarConvergenceAltarBlockEntity pBlockEntity) {
         if (pLevel.isClientSide()) {
             return;
         }
         Optional<SolarConvergenceAltarRecipe> recipeOptional = pBlockEntity.getRecipe();
-        if (pBlockEntity.status.equals(Status.INACTIVE)) {
-            if (pBlockEntity.canConverge()) {
-                pBlockEntity.status = Status.STARTING;
-                pBlockEntity.setChanged();
-            }
-        } else if (pBlockEntity.status.equals(Status.STARTING)) {
-            if (!pBlockEntity.canConverge()) {
-                pBlockEntity.status = Status.STOPPING;
-            } else {
-                pBlockEntity.beamProgress++;
-                if (pBlockEntity.beamProgress >= TOTAL_BEAM_PROGRESS) {
-                    pBlockEntity.status = Status.ACTIVE;
-                }
-            }
-            pBlockEntity.setChanged();
-        } else if (pBlockEntity.status.equals(Status.ACTIVE)) {
-            if (!pBlockEntity.canConverge()) {
-                pBlockEntity.status = Status.STOPPING;
-                pBlockEntity.setChanged();
-            } else if (recipeOptional.isPresent()) {
-                pBlockEntity.status = Status.PROCESSING;
-                pBlockEntity.setChanged();
-            }
-        } else if (pBlockEntity.status.equals(Status.PROCESSING)) {
-            if (!pBlockEntity.canConverge()) {
-                pBlockEntity.status = Status.STOPPING;
+        if (!pBlockEntity.canConverge()) {
+            pBlockEntity.processingTicks = 0;
+            pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.STOPPING), 3);
+        } else if (recipeOptional.isEmpty()) {
+            pBlockEntity.processingTicks = 0;
+            pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.ACTIVE), 3);
+        } else {
+            pBlockEntity.processingTicks++;
+            if (pBlockEntity.processingTicks >= TOTAL_PROCESSING_TICKS) {
                 pBlockEntity.processingTicks = 0;
-            } else if (recipeOptional.isEmpty()) {
-                pBlockEntity.status = Status.ACTIVE;
-                pBlockEntity.processingTicks = 0;
-            } else {
-                pBlockEntity.processingTicks++;
-                if (pBlockEntity.processingTicks >= TOTAL_PROCESSING_TICKS) {
-                    ItemStack result = recipeOptional.get().getResultItem();
-                    result.setCount(pBlockEntity.itemStackHandler.getStackInSlot(0).getCount());
-                    pBlockEntity.itemStackHandler.setStackInSlot(0, result);
-                    pBlockEntity.status = Status.ACTIVE;
-                    pBlockEntity.processingTicks = 0;
-                }
-            }
-            pBlockEntity.setChanged();
-        } else if (pBlockEntity.status.equals(Status.STOPPING)) {
-            if (pBlockEntity.canConverge()) {
-                pBlockEntity.status = Status.STARTING;
-            } else {
-                pBlockEntity.beamProgress--;
-                if (pBlockEntity.beamProgress <= 0) {
-                    pBlockEntity.status = Status.INACTIVE;
-                }
+                ItemStack result = recipeOptional.get().getResultItem();
+                result.setCount(pBlockEntity.itemStackHandler.getStackInSlot(0).getCount());
+                pBlockEntity.itemStackHandler.setStackInSlot(0, result);
+                pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.ACTIVE), 3);
             }
             pBlockEntity.setChanged();
         }
-        BlockPos pos = pBlockEntity.getBlockPos();
-        BlockState state = pLevel.getBlockState(pos);
-        boolean converging = !pBlockEntity.status.equals(Status.INACTIVE);
-        if (state.getValue(SolarConvergenceAltarBlock.CONVERGING) != converging) {
-            pLevel.setBlock(pos, state.setValue(SolarConvergenceAltarBlock.CONVERGING, converging), 3);
+    }
+
+    public static void stoppingTick(Level pLevel, BlockPos pBlockPos, BlockState pBlockState, SolarConvergenceAltarBlockEntity pBlockEntity) {
+        if (pLevel.isClientSide()) {
+            return;
+        }
+        if (pBlockEntity.canConverge()) {
+            pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.STOPPING), 3);
+        } else {
+            pBlockEntity.beamProgress--;
+            if (pBlockEntity.beamProgress <= 0) {
+                pBlockEntity.beamProgress = 0;
+                pLevel.setBlock(pBlockPos, pBlockState.setValue(SolarConvergenceAltarBlock.STATUS, SolarConvergenceAltarStatus.INACTIVE), 3);
+            }
+            pBlockEntity.setChanged();
         }
     }
 
     @Override
     protected void saveAdditional(CompoundTag pTag) {
         pTag.put("inventory", itemStackHandler.serializeNBT());
-        pTag.putString("status", status.toString());
         pTag.putInt("beamProgress", beamProgress);
         pTag.putInt("processingTicks", processingTicks);
         super.saveAdditional(pTag);
@@ -193,7 +196,6 @@ public class SolarConvergenceAltarBlockEntity extends BlockEntity {
     public void load(CompoundTag pTag) {
         super.load(pTag);
         itemStackHandler.deserializeNBT(pTag.getCompound("inventory"));
-        status = Status.valueOf(pTag.getString("status"));
         beamProgress = pTag.getInt("beamProgress");
         processingTicks = pTag.getInt("processingTicks");
     }
